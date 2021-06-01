@@ -1,0 +1,120 @@
+[
+    {
+        "5440": {
+            "category": "PNAD",
+            "c1": null,
+            "c": "",
+            "v": [
+                0,
+                2
+            ]
+        },
+        "4093": {
+            "category": "PNAD",
+            "c1": null,
+            "c": null,
+            "v": [
+                0,
+                4,
+                8,
+                12,
+                16,
+                20,
+                24
+            ]
+        },
+        "3419": {
+            "category": "PMC",
+            "c1": "",
+            "c": [
+                0,
+                1
+            ],
+            "v": ""
+        },
+        "3417": {
+            "category": "PMC",
+            "c1": null,
+            "c": [
+                0,
+                1
+            ],
+            "v": ""
+        },
+        "3416": {
+            "category": "PMC",
+            "c1": null,
+            "c": [
+                0,
+                1
+            ],
+            "v": [
+                0,
+                1
+            ]
+        },
+        "3415": {
+            "category": "PMC",
+            "c1": null,
+            "c": "",
+            "v": [
+                0,
+                1
+            ]
+        },
+        "3652": {
+            "category": "PMI",
+            "c1": null,
+            "c": null,
+            "v": [
+                0,
+                1
+            ]
+        },
+        "3651": {
+            "category": "PMI",
+            "c1": null,
+            "c": "",
+            "v": [
+                0,
+                1
+            ]
+        },
+        "3650": {
+            "category": "PMI",
+            "c1": null,
+            "c": "",
+            "v": [
+                0,
+                1
+            ]
+        },
+        "3653": {
+            "category": "PIM",
+            "c1": null,
+            "c": "",
+            "v": [
+                0,
+                1
+            ]
+        },
+        "1846": {
+            "category": "contas nacionais",
+            "c1": null,
+            "c": "",
+            "v": ""
+        },
+        "1621": {
+            "category": "contas nacionais",
+            "c1": null,
+            "c": "",
+            "v": ""
+        },
+        "1620": {
+            "category": "contas nacionais",
+            "c1": null,
+            "c": "",
+            "v": ""
+        }
+    }
+]
