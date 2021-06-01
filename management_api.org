@@ -19,8 +19,9 @@ plug-and-play manner.
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/inflation/api/v0.1/?tickers=tbl.ipca15_geral&date_ini=2021-03-01&date_end=2021-05-01
+GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=tbl.ipca15_geral&date_ini=2021-03-01&date_end=2021-05-01
 #+end_src
+
 
 *** POST observations
    :PROPERTIES:
@@ -30,7 +31,7 @@ GET http://127.0.0.1:8000/inflation/api/v0.1/?tickers=tbl.ipca15_geral&date_ini=
    
 #+header: :var indicator="IPCA15" date="2021-05-01"
 #+begin_src http
-POST http://127.0.0.1:8000/inflation/api/v0.1/
+POST http://127.0.0.1:8000/api/v0.1/inflation
 Content-Type: application/json
 
 {
@@ -71,7 +72,7 @@ Content-Type: application/json
    :END:
    
 #+begin_src http :pretty
-GET http://96.126.101.177:8000/inflation/api/v0.1/tables?ticker=tbl.ipca_cores
+GET http://96.126.101.177:8000/api/v0.1/inflation/tables?ticker=tbl.ipca_cores
 #+end_src
 
 #+RESULTS:
@@ -112,7 +113,7 @@ GET http://96.126.101.177:8000/inflation/api/v0.1/tables?ticker=tbl.ipca_cores
    :END:
    
 #+begin_src http
-POST http://127.0.0.1:8000/inflation/api/v0.1/tables
+POST http://127.0.0.1:8000/api/v0.1/inflation/tables
 Content-Type: application/json
 
 {
@@ -154,7 +155,7 @@ Content-Type: application/json
    :END:
    
 #+begin_src http
-PUT http://96.126.101.177:8000/inflation/api/v0.1/tables
+PUT http://96.126.101.177:8000/api/v0.1/inflation/tables
 Content-Type: application/json
 
 {
@@ -197,7 +198,7 @@ Content-Type: application/json
    
 #+header: :var ticker="tbl.ipcaa5_cores"
 #+begin_src http
-DELETE http://96.126.101.177:8000/inflation/api/v0.1/tables
+DELETE http://96.126.101.177:8000/api/v0.1/inflation/tables
 Content-Type: application/json
 
 {
@@ -218,49 +219,9 @@ Content-Type: application/json
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/econseries/api/v0.1/?tickers=ibge.1621/p/all/v/584/c11255/90707&date_ini=2012-01-01
+GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=ibge.1621/p/all/v/584/c11255/90707&date_ini=2012-01-01
 #+end_src
 
-#+RESULTS:
-#+begin_example
-date,IBGE.1621/P/ALL/V/584/C11255/90707
-2012-01-01,165.27
-2012-04-01,168.2
-2012-07-01,171.15
-2012-10-01,171.11
-2013-01-01,172.01
-2013-04-01,174.55
-2013-07-01,175.29
-2013-10-01,175.52
-2014-01-01,177.07
-2014-04-01,174.41
-2014-07-01,174.33
-2014-10-01,175.22
-2015-01-01,173.88
-2015-04-01,169.74
-2015-07-01,166.95
-2015-10-01,165.66
-2016-01-01,163.22
-2016-04-01,163.84
-2016-07-01,162.85
-2016-10-01,162.66
-2017-01-01,164.44
-2017-04-01,165.75
-2017-07-01,166.1
-2017-10-01,166.84
-2018-01-01,168.06
-2018-04-01,167.89
-2018-07-01,169.41
-2018-10-01,168.81
-2019-01-01,170.35
-2019-04-01,171.02
-2019-07-01,170.84
-2019-10-01,171.46
-2020-01-01,167.93
-2020-04-01,152.46
-2020-07-01,164.14
-2020-10-01,169.33
-#+end_example
 
 
 *** POST observations
@@ -271,7 +232,7 @@ date,IBGE.1621/P/ALL/V/584/C11255/90707
    
 #+header: :var source="fred" database="series-temporais" limit=10
 #+begin_src http
-POST http://127.0.0.1:8000/econseries/api/v0.1/
+POST http://127.0.0.1:8000/api/v0.1/econseries
 Content-Type: application/json
 
 {
@@ -445,7 +406,7 @@ Content-Type: application/json
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/econseries/api/v0.1/?tickers=ibge.1621/p/all/v/584/c11255/90707&date_ini=2012-01-01
+GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=ibge.1621/p/all/v/584/c11255/90707&date_ini=2012-01-01
 #+end_src
 
 
@@ -457,7 +418,7 @@ GET http://127.0.0.1:8000/econseries/api/v0.1/?tickers=ibge.1621/p/all/v/584/c11
    
 #+header: :var source="fred" database="series-temporais" limit=10
 #+begin_src http
-POST http://127.0.0.1:8000/econseries/api/v0.1/
+POST http://127.0.0.1:8000/api/v0.1/econseries
 Content-Type: application/json
 
 {
@@ -484,36 +445,6 @@ Content-Type: application/json
 GET http://96.126.101.177:8000/inflation/api/v0.1/tables?ticker=tbl.ipca_cores
 #+end_src
 
-#+RESULTS:
-#+begin_example
-{
-  "ticker": "TBL.IPCA_CORES",
-  "description": "TABLE A SER ENVIADA PARA BROADCAST (IPCA)",
-  "series": [
-    "IPCA.CORE_EXO",
-    "IBGE.IPCA/P/ALL/V/63/C315/7169",
-    "IPCA.CORE_DIFUSAO",
-    "IPCA.CORE_EX1",
-    "IPCA.CORE_APARADAS",
-    "IPCA.CORE_SERVICOS",
-    "IPCA.CORE_DURAVEIS",
-    "IPCA.CORE_MONITORADOS",
-    "IPCA.SERVICOS",
-    "IPCA.CORE_EX2",
-    "IPCA.CORE_P55",
-    "IPCA.CORE_TRADABLES",
-    "IPCA.CORE_APARADAS_SUAVIZADAS",
-    "IPCA.CORE_EX3",
-    "IPCA.CORE_LIVRES",
-    "IPCA.CORE_DP"
-  ]
-}
-#+end_example
-
-
-
-
-
 
 *** POST Tables
 
@@ -521,42 +452,7 @@ GET http://96.126.101.177:8000/inflation/api/v0.1/tables?ticker=tbl.ipca_cores
    :Method:   POST
    :END:
    
-#+begin_src http
-POST http://127.0.0.1:8000/inflation/api/v0.1/tables
-Content-Type: application/json
-
-{
-	"ticker": "tbl.ipca_cores",
-	"description": "Table a ser enviada para Broadcast (IPCA)",
-	"series": [
-    "IBGE.IPCA/P/ALL/V/63/C315/7169",
-	"ipca.core_exo", 
-	"ipca.core_ex1", 
-	"ipca.core_ex2",
-	"ipca.core_ex3",
-	"ipca.servicos",
-	"ipca.core_servicos",
-	"ipca.core_monitorados",
-	"ipca.core_livres",
-	"ipca.core_duraveis",
-	"ipca.core_tradables",
-	"ipca.core_aparadas",
-	"ipca.core_aparadas_suavizadas",
-	"ipca.core_dp",
-	"ipca.core_p55", 
-    "ipca.core_difusao"]
-}
-#+end_src
-
-#+RESULTS:
-: HTTP/1.1 200 OK
-: date: Tue, 04 May 2021 17:13:37 GMT
-: server: uvicorn
-: content-length: 31
-: content-type: application/json
-: 
-: "Table tbl.ipca_cores created!"
-
+   
 
 *** PUT observations
    :PROPERTIES:
@@ -589,15 +485,6 @@ Content-Type: application/json
     "ipca.core_difusao"]
 }
 #+end_src
-
-#+RESULTS:
-: HTTP/1.1 200 OK
-: date: Thu, 22 Apr 2021 21:33:29 GMT
-: server: uvicorn
-: content-length: 34
-: content-type: application/json
-: 
-: "Table tbl.ipca_cores modified!"
 
 
 *** DELETE table

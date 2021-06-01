@@ -15,7 +15,6 @@ from DB.loaders import fetch_obs
 
 router = APIRouter()
 
-
 #classes
 class Ind_obs(BaseModel):
     """
@@ -38,7 +37,7 @@ class Tabledb(BaseModel):
 
 
 # fetch resources
-@router.get("/econseries/api/v0.1/")
+@router.get("/api/v0.1/econseries")
 async def get_series(tickers: List[str]=Query(..., regex="^.+\..+"),
                      date_ini:datetime.date=Query(None), #, regex="^\d{4}-\d{2}-\d{2}$"), 
                      date_end:datetime.date=Query(None), #, regex="^\d{4}-\d{2}-\d{2}$"), 
@@ -62,7 +61,7 @@ async def get_series(tickers: List[str]=Query(..., regex="^.+\..+"),
 
 # management of resources
 # series
-@router.post("/econseries/api/v0.1/")
+@router.post("/api/v0.1/econseries")
 async def add_obs_indicator(indobs: Ind_obs):
     """
     add all observations for an indicator and a particular time as in indbos
@@ -72,7 +71,7 @@ async def add_obs_indicator(indobs: Ind_obs):
 
 
 # tables
-@router.get("/econseries/api/v0.1/tables")
+@router.get("/api/v0.1/econseries/tables")
 async def get_table(ticker:str=Query(None)):
     """
     fetches all the info (tickers, description) for a 
@@ -81,7 +80,7 @@ async def get_table(ticker:str=Query(None)):
     return fetch_tbl(ticker)
 
 
-@router.post("/econseries/api/v0.1/tables")
+@router.post("/api/v0.1/econseries/tables")
 async def create_table(table:Tabledb):
     """
     creates a table with ticker, description, series
@@ -93,7 +92,7 @@ async def create_table(table:Tabledb):
     return f"Table {table.ticker} is not in the database"
 
 
-@router.put("/econseries/api/v0.1/tables")
+@router.put("/api/v0.1/econseries/tables")
 async def madify_table(table:Tabledb):
     """
     modifies a table by changing either the 
@@ -104,7 +103,7 @@ async def madify_table(table:Tabledb):
     return f"Table {table.ticker} not in the database"
 
 
-@router.delete("/econseries/api/v0.1/tables")
+@router.delete("/api/v0.1/econseries/tables")
 async def delete_table(table:Tabledb):
     """
     deletes a table with a particular ticker
