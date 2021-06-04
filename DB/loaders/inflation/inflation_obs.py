@@ -18,23 +18,20 @@ import pendulum
 from DB.transactions import add_obs
 
 
-# information necessary to build the url to fetch the observation in block
-data = {"IPCA":["7060/p/all/v/63,66/c315/all", # new
-                "1419/p/all/v/63,66/c315/all"],# old
-        "IPCA15":["7062/p/all/v/355,357/c315/all", # new
-                  "1705/p/all/v/355,357/c315/all"]} # old
-
-
 def _build_url(indicator:str, dat:str, new:bool=True) -> str:
     """
-    For indicator {IPCA, IPCA-15}, nth-limit last observations, 
+    For indicator {IPCA, IPCA-15}, the observations at period dat, 
     and whether we should fetch the old or new observations of the 
     indicator (that is, before or after 2020-01). 
     Returns the url for that particular request.
     """
+    data = {"IPCA":[f"7060/p/{dat}/v/63,66/c315/all", # new
+                f"1419/p/{dat}/v/63,66/c315/all"],# old
+            "IPCA15":[f"7062/p/{dat}/v/355,357/c315/all", # new
+                  f"1705/p/{dat}/v/355,357/c315/all"]} # old
+
     ticker = data[indicator][0 if new else 1]
-    tck_new = ticker.replace("all", f"{dat}", 1)
-    return f"http://api.sidra.ibge.gov.br/values/t/{tck_new}/n1/1/f/a"
+    return f"http://api.sidra.ibge.gov.br/values/t/{ticker}/n1/1/f/a"
 
 
 def _process(url:str, s:requests.Session) -> Optional[pd.DataFrame]:
@@ -59,7 +56,6 @@ def _process(url:str, s:requests.Session) -> Optional[pd.DataFrame]:
             attemp += 1
             if attemp > l:
                 return None
-
     url = resp.url
     tbl = re.search(r"values/t/(\d{4})/", url).group(1)
     indic = {"7060":"IPCA", "1419":"IPCA", "7062":"IPCA15", "1705":"IPCA15"}[tbl]
@@ -77,7 +73,7 @@ def _process(url:str, s:requests.Session) -> Optional[pd.DataFrame]:
     return dn
 
 
-def fetch(s:requests.Session, 
+def fetch_request(s:requests.Session, 
           indicator:str, dat:Optional[str]=None,
           new:bool=True, ) -> pd.DataFrame:
     """
@@ -86,7 +82,7 @@ def fetch(s:requests.Session,
     new=True is to fetch the new indicator, from valid from 2020-10. 
     Returns pandas dataframe
     """
-    
+    global url
     url = _build_url(indicator, dat=dat, new=new)
     return _process(url, s)
 
@@ -97,16 +93,23 @@ def _add_data_frame(df: pd.DataFrame) -> None:
     particular indicator {IPCA, IPCA15} and adds to the database.
     """
     # turn this code into something more efficient
-    for i in range(0, df.shape[0]):
+    def _insert_df(input:np.array):
         try:
-            input = df.iloc[i,:].values
             add_obs(input[0], input[1].to_pydatetime(), float(input[2]))
         except:
-            print(f"failed to add series {df.iloc[i,:].values[0]}")
+            print(f"failed to add series {input[0]}")
+
+    [_insert_df(df.iloc[i,:].values) for i in range(0, df.shape[0])]
+
+    # for i in range(0, df.shape[0]):
+    #     try:
+    #         input = df.iloc[i,:].values
+    #         add_obs(input[0], input[1].to_pydatetime(), float(input[2]))
+    #     except:
+    #         print(f"failed to add series {df.iloc[i,:].values[0]}")
 
 
-
-def fetch_obs(cpi:str, ini: Optional[str]=None, 
+def fetch(cpi:str, ini: Optional[str]=None, 
               end:Optional[str]=None) -> None:
     """
     cpi is the kind of indicator [IPCA, IPCA15], 
@@ -132,14 +135,14 @@ def fetch_obs(cpi:str, ini: Optional[str]=None,
     def _insert_ipca(indicator, month):
         if cpi == "IPCA":
             if (pendulum.from_format(month, "YYYYMM") <= pendulum.datetime(2019,12,1)):
-                df = fetch(s, cpi, dat=month, new=False)
+                df = fetch_request(s, cpi, dat=month, new=False)
             else:
-                df = fetch(s, cpi, dat=month, new=True)
+                df = fetch_request(s, cpi, dat=month, new=True)
         else:
             if (pendulum.from_format(month, "YYYYMM") <= pendulum.datetime(2020,1,1)):
-                df = fetch(s, cpi, dat=month, new=False)
+                df = fetch_request(s, cpi, dat=month, new=False)
             else:
-                df = fetch(s, cpi, dat=month, new=True)
+                df = fetch_request(s, cpi, dat=month, new=True)
         _add_data_frame(df)
         print(month)
 

@@ -38,6 +38,7 @@ def process(resp):
 
 
 def fetch(tickers:str, limit: Optional[int] = None):
+    global key
     key = config['ApiKeys']['fred']
     urls =[build_fred(key, tck.split(".")[1], limit) for tck in tickers]
     with requests.session() as session:

@@ -9,19 +9,19 @@ from bs4 import BeautifulSoup as bs
 # import from app
 from DB.transactions import add_series
 
-data = {1620:{"v":"", "c":"", "c1": None}, #contas nacionais
-        1621:{"v":"", "c":"", "c1": None}, #contas nacionas, des
-        1846:{"v":"", "c":"", "c1": None}, #contas nacionas nominal
-        3653:{"v":[0, 1], "c": "", "c1": None}, #PIM setorial
-        3650:{"v":[0, 1], "c": "", "c1": None}, #PIM setorial
-        3651:{"v":[0, 1], "c": "", "c1": None}, #PIM setorial
-        3652:{"v":[0, 1], "c": None, "c1": None}, # PIM construção civil
-        3415:{"v":[0, 1], "c": "", "c1": None}, #PMC material de construção
-        3416:{"v":[0, 1], "c":[0, 1], "c1": None}, #PMC narrow
-        3417:{"v":"", "c":[0, 1], "c1": None}, #PMC headline
-        3419:{"v":"", "c":[0, 1], "c1": ""}, #PMC
-        4093:{"v":[0, 4, 8, 12, 16, 20, 24], "c": None, "c1": None}, #pnad mensal 
-        5440:{"v": [0, 2], "c":"", "c1": None}} #pnad rendimento
+data = {1620:{"v":"", "c":"", "c1": None, "s":"CN"}, #contas nacionais
+        1621:{"v":"", "c":"", "c1": None, "s": "CN"}, #contas nacionas, des
+        1846:{"v":"", "c":"", "c1": None, "s": "CN"}, #contas nacionas nominal
+        3653:{"v":[0, 1], "c": "", "c1": None, "s": "PIM"}, #PIM setorial
+        3650:{"v":[0, 1], "c": "", "c1": None, "s": "PIM"}, #PIM setorial
+        3651:{"v":[0, 1], "c": "", "c1": None, "s": "PIM"}, #PIM setorial
+        3652:{"v":[0, 1], "c": None, "c1": None, "s": "PIM"}, # PIM construção civil
+        3415:{"v":[0, 1], "c": "", "c1": None, "s": "PMC"}, #PMC material de construção
+        3416:{"v":[0, 1], "c":[0, 1], "c1": None, "s": "PMC"}, #PMC narrow
+        3417:{"v":"", "c":[0, 1], "c1": None, "s": "PMC"}, #PMC headline
+        3419:{"v":"", "c":[0, 1], "c1": "", "s": "PMC"}, #PMC
+        4093:{"v":[0, 4, 8, 12, 16, 20, 24], "c": None, "c1": None, "s": "PNAD"}, #pnad mensal 
+        5440:{"v": [0, 2], "c":"", "c1": None, "s": "PNAD"}} #pnad rendimento
 
 
 
@@ -81,13 +81,13 @@ for t in data.keys():
                         ind1 = soup.select(tag_id)[0].get_text()
                         description = f"{cdescription}, {c1description}, {vdescription}"
                         ticker = f"IBGE.{t}/p/all/v/{vnumber}/c{classe}/{ind}/c{classe1}/{ind1}"
-                        series.append([ticker, description, "IBGE", "SERIES-TEMPORAIS"]) #, description, "Brasil", "IBGE"])
+                        series.append([ticker, description, "IBGE", data[t]["s"], "SERIES-TEMPORAIS"]) #, description, "Brasil", "IBGE"])
                 else:
-                    series.append([ticker, description, "IBGE", "SERIES-TEMPORAIS"]) #, description, "Brasil", "IBGE"])
+                    series.append([ticker, description, "IBGE", data[t]["s"], "SERIES-TEMPORAIS"]) #, description, "Brasil", "IBGE"])
         else:
             ticker = f"IBGE.{t}/p/all/v/{vnumber}"
             description = f"{vdescription}"
-            series.append([ticker, description, "IBGE", "SERIES-TEMPORAIS"])
+            series.append([ticker, description, "IBGE", data[t]["s"], "SERIES-TEMPORAIS"])
         
 print(f"done fetching {len(series)} series information!")        
 

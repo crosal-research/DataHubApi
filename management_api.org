@@ -19,7 +19,7 @@ plug-and-play manner.
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=tbl.ipca15_geral&date_ini=2021-03-01&date_end=2021-05-01
+GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=ipca15.core_DP&date_ini=2021-03-01&date_end=2021-05-01
 #+end_src
 
 
@@ -29,36 +29,46 @@ GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=tbl.ipca15_geral&date_ini=2
    :END:
    
    
-#+header: :var indicator="IPCA15" date="2021-05-01"
+#+header: :var survey="IPCA15" date_ini="2021-05-01" date_end="2021-05-01"
 #+begin_src http
 POST http://127.0.0.1:8000/api/v0.1/inflation
 Content-Type: application/json
 
 {
-	"date": "${date}",
-	"indicator": "${indicator}"
+	"survey": "${survey}",
+	"date_ini": "${date_ini}",
+	"date_end": "${date_end}"
 
 }
 #+end_src
 
 
-*** DELETE obsevations
+
+*** DELETE observations
    :PROPERTIES:
    :Method:   DELETE
    :END:
    
-
-#+header: :var indicator="IPCA15" date="2021-05-01"
+#+header: :var survey="IPCA15" date_ini="2021-05-01" date_end="2021-05-01"
 #+begin_src http
-DELETE http://127.0.0.1:8000/inflation/api/v0.1/
+DELETE http://127.0.0.1:8000/api/v0.1/inflation
 Content-Type: application/json
 
 {
-	"indicator": "${indicator}",
-	"date": "${date}"
+  "survey": "${survey}",
+	"date_ini": "${date_ini}",
+	"date_end": "${date_end}"
 }
 #+end_src
 
+#+RESULTS:
+: HTTP/1.1 200 OK
+: date: Fri, 04 Jun 2021 14:31:46 GMT
+: server: uvicorn
+: content-length: 4
+: content-type: application/json
+: 
+: null
 
 
 ** TABLES
@@ -219,8 +229,11 @@ Content-Type: application/json
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=ibge.1621/p/all/v/584/c11255/90707&date_ini=2012-01-01
+GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=fred.&date_ini=2012-01-01
 #+end_src
+
+#+RESULTS:
+: date,FRED.UNRATE
 
 
 

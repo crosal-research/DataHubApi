@@ -29,12 +29,13 @@ def insert():
     """
     insert the series from vencimentos into the DataBase
     """
+    global input
     resp = requests.get(url)
     df = _process(resp).columns
     for col in df:
         input = (f"BCB.{col}", 
                  f"Vencimento dos Títulos {col} (R$mn)",
-                 "BCBVTB", "VENCIMENTOS")
+                 "BCB", "VENC", "VENCIMENTOS")
         add_series(*input)
 
 

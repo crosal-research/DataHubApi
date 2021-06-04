@@ -18,57 +18,59 @@ DATE_END = "2100-01-01" # good for when no final  date is provided
 # series
 # upserts 
 @orm.db_session
-def add_source(source:str, description:str, database:str):
+def add_source(source:str, description:str, survey: str, 
+               database:str):
     """
     Add source to the base with info in capital letters
     """
     Usource = source.upper()
     Udatabase = database.upper()
-    if (src:= db.SourceDB.get(source=Usource, database=Udatabase)) is None:
+    Usurvey = survey.upper()
+    if (src:= db.SourceDB.get(source=Usource, survey=Usurvey,
+                              database=Udatabase)) is None:
         db.SourceDB(source=Usource, description=description, 
-                  database=Udatabase)
-        print(f"New source {Usource} and {Udatabase} added to the Database")
+                    survey=Usurvey, database=Udatabase)
+        print(f"New source ({Usource}, {Usurvey}, {Udatabase}) added to the Database")
     else:
         src.description = description
-        print(f"SourceDB {Usource} and {Udatabase} already in the Database. Description Updated")
+        print(f"SourceDB ({Usource}, {Usurvey}, {Udatabase}) already in the Database. Description Updated")
 
 
 @orm.db_session
-def add_series(ticker:str, description:str, source: str, database:str,
-               group:Optional[str]=None, kind:Optional[str]=None, 
-               indicator: Optional[str]=None) -> None:
+def add_series(ticker:str, description:str, source: str, survey: str, database:str,
+               group:Optional[str]=None, kind:Optional[str]=None) -> None:
     """
     Adds a series to the database, with ticker, descript, group in the 
     cpi, kind (peso/variacao) and indicators (cpi, cpi-15).
     """
     Uticker = ticker.upper()
-    Usource = source
+    Usource = source.upper()
+    Usurvey = survey.upper()
     Udescription = description.upper()
     Udatabase = database.upper()
     Ugroup = group.upper() if group is not None else None
     Ukind = kind.upper() if kind is not None else None
-    Uindicator = indicator.upper() if indicator is not None else None
+    Usrc = db.SourceDB.get(source=Usource, survey=Usurvey, database=Udatabase)
 
-    if Udatabase == "INFLACAO" and Usource == "IBGE":
+    if Usrc.database == "INFLACAO" and Usrc.source == "IBGE":
         if (tck:= db.SeriesInflation.get(ticker=Uticker)) is None:
             db.SeriesInflation(ticker=Uticker, description=Udescription, 
-                               group=Ugroup, kind=Ukind, indicator=Uindicator, 
-                               source=db.SourceDB.get(source=Usource, database=Udatabase))
-            print(f"Series {ticker} added to the Database")
+                               group=Ugroup, kind=Ukind, 
+                               source=Usrc)
+            print(f"Series {ticker} added to the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
         else:
             tck.description = Udescription
             tck.group = Ugroup
             tck.kind = Ukind
-            tck.indicator = Uindicator
-            print(f"Series {ticker} updated in the Database")
+            print(f"Series {ticker} updated in the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
     else: # if ticker doesn't belong to database inflacao
         if (tck:= db.Series.get(ticker=Uticker)) is None:
             db.Series(ticker=Uticker, description=Udescription, 
-                      source=db.SourceDB.get(source=Usource, database=Udatabase))
-            print(f"Series {ticker} added to the Database")
+                      source=db.SourceDB.get(source=Usource, survey=Usurvey, database=Udatabase))
+            print(f"Series {ticker} added to the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
         else:
             tck.description = Udescription
-            print(f"Series {ticker} updated in the Database")
+            print(f"Series {ticker} updated in the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
 
 
 @orm.db_session        
@@ -125,9 +127,10 @@ def fetch_info_by_ticker(ticker:str) -> pd.DataFrame:
 
 
 @orm.db_session
-def fetch_series_list(source:str, database:str) -> List[str]:
-    src = db.Series.select(lambda s:  (s.source.source == source.upper() 
-                                       and s.source.database == database.upper()))
+def fetch_series_list(source:str, survey: str, database:str) -> List[str]:
+    src = db.Series.select(lambda s:  (s.source.source == source.upper() and
+                                       s.source.survey == survey.upper() and
+                                       s.source.database == database.upper()))
     return [s.ticker for s in src]
 
      
@@ -160,15 +163,22 @@ def fetch_by_ticker(tickers: List[str],
 
 # deletes
 @orm.db_session
-def delete_observations(indicator:str, date:str):
+def delete_observations(source:str, survey:str, 
+                        database:str, 
+                        date_ini:str, date_end:str):
     """
     deletes all the obervations of pertaining to a indicator 
     [IPCA, IPCA15] at a particular date
     """
-    date = dt.fromisoformat(date)
+    date_ini = dt.fromisoformat(date_ini)
+    date_end = dt.fromisoformat(date_end)
+    sourcedb = db.SourceDB.get(source=source.upper(), 
+                               survey=survey.upper(), 
+                               database=database.upper())
     obs = orm.select(o for o in db.Observation 
-                     if ((o.series.indicator == indicator) and 
-                         (o.data == date)) and (o.data))
+                     if ((o.series.source == sourcedb) and 
+                         (o.data >= date_ini) and 
+                         (o.data <= date_end)))
     if len(obs) >1:
         obs.delete(bulk=True)
         return "ok"

@@ -108,13 +108,10 @@ for t in data.keys():
             series.append([ticker, description, group, kind, i])
 
 sd = {v[0]:[v[1], v[2], v[3], v[4]] for v in series}
-srs = [[k, sd[k][0], "IBGE", "Inflacao", sd[k][1], sd[k][2], sd[k][3]] for k in sd]
-
-# print(f"done fetching {len(srs)} srs information!: {time.time() - t0}")        
+srs = [[k, sd[k][0], "IBGE", sd[k][3], "Inflacao", sd[k][1], sd[k][2]] for k in sd]
 
 t0 = time.time()
 
-with ThreadPoolExecutor() as executor:
-     executor.map(lambda s: add_series(*s), srs)
+# [add_series(*s) for s in srs]     
     
-print(f"series added to database: {time.time() -t0} secs")    
+# print(f"series added to database: {time.time() -t0} secs")    

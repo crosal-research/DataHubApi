@@ -10,9 +10,10 @@ db = orm.Database()
 class SourceDB(db.Entity):
     database = orm.Required(str)
     source = orm.Required(str)
+    survey = orm.Required(str)
     description = orm.Required(str)
     series = orm.Set('Series')
-    orm.composite_key(source, database)
+    orm.composite_key(source, survey, database)
 
 
 class Series(db.Entity):
@@ -26,7 +27,6 @@ class Series(db.Entity):
 class SeriesInflation(Series):    
     group = orm.Required(str) #geral, grupo, subgrupo, item, subitem, nucleo, nucleo
     kind = orm.Required(str)  # peso, variaçao
-    indicator = orm.Required(str) # ipca, ipca15
 
 
 class Observation(db.Entity):

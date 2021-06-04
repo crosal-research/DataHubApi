@@ -38,7 +38,9 @@ def _process(resp: requests.models.Response):
 
 
 def fetch(tickers:list, limit=None) -> None:
+    global urls
     t1 = time.time()
+    print(t1)
     urls = [_build_url(tck) for tck in tickers]
     with requests.session() as session:
         with executor() as e:
@@ -53,12 +55,7 @@ def fetch(tickers:list, limit=None) -> None:
             print(f"{z[0]} added to the database")
         except:
             print(f"{z[0]} resulted in a empty dataframe")
-    # for dz in zip(tickers, dfs):
-    #     try:
-    #         add_batch_obs(*dz)
-    #         print(f"{dz[0]} added to the database")
-    #     except:
-    #         print(f"{dz[0]} resulted in a empty dataframe")
+
     [_upsert_obs(dz) for dz in zip(tickers, dfs)]
     print(f"Done updating ibge data: {time.time() - t1} seconds")
 ##############################MAIN##############################

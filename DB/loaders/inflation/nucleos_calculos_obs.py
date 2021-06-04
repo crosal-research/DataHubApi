@@ -173,12 +173,14 @@ def core_dp(date, dv_:pd.DataFrame, dp_:pd.DataFrame,
                       weights=new_sm.T)
 
 
-def add_cores(cpi:str, ini: Optional[str]=None, 
+def add_cores(core:str, ini: Optional[str]=None, 
               end:Optional[str]=None) -> None:
     """"
     Add to the database 
     """
-    cpi = cpi.upper()
+    global dg
+    cpi = "IPCA" if core=="CORES" else "IPCA15"
+    print(cpi)
     dvi = fetch_group(group="ITEM", ticker=True, indicator=cpi) # all items for all dates
     dpi = fetch_group(group="ITEM", kind= "PESO", ticker=True, indicator=cpi) # all item for all dates
     dg = fetch_group(group="GERAL", indicator=cpi) #

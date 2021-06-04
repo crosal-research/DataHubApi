@@ -20,7 +20,6 @@ def build_fred(key, ticker):
     return f"https://api.stlouisfed.org/fred/series?series_id={ticker}"  \
         + f"&api_key={key}&file_type=json"
 
-
 def process(url):
     resp = requests.get(url).json()["seriess"][0]
     sea = resp['seasonal_adjustment']
@@ -36,7 +35,6 @@ with executor() as e:
     infos = list(e.map(process, urls))
 
 for num, tck in enumerate(Atickers):
-    add_series(tck, infos[num], "FRED", 'SERIES-TEMPORAIS')
-    print(f"Series {tck} added to the Database")
+    add_series(tck, infos[num], "FRED", "GERAL", 'SERIES-TEMPORAIS')
     
 

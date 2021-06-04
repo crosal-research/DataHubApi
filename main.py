@@ -26,3 +26,4 @@ app.include_router(econseries.router)
 async def home():
     return {"message": "Hello Database User"}
 
+

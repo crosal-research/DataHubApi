@@ -1,5 +1,4 @@
 # import from system
-from functools import wraps
 from typing import Optional
 
 # import from packages
@@ -7,9 +6,8 @@ import pendulum
 
 # imports from app
 from DB.loaders.fred import fred_obs #bcb, cepea, ibge, ons, fred, ipea
-# from Loaders.Observations import mobility_apple, bcb_exp, covid, pnad_covid
-# from Loaders.Observations import bcb_vencimentos
 from DB.loaders.inflation import inflation_obs
+from DB.loaders.inflation import nucleos_calculos_obs
 from DB.loaders.ibge import ibge_obs
 from DB.loaders.bcb_vencimentos import bcb_vencimentos_obs
 from DB.transactions import fetch_series_list
@@ -20,33 +18,37 @@ __all__ = ["fetch_obs"]
 INI="1900-01-01"
 END="2100-12-31"
 
-source_dict = {("FRED", "SERIES-TEMPORAIS"): fred_obs.fetch,
-               ("IBGE", "SERIES-TEMPORAIS"): ibge_obs.fetch,
-               ("BCB", "VENCIMENTOS"): bcb_vencimentos_obs.fetch,
-               ("IBGE", "INFLACAO"): inflation_obs.fetch}
-
-# source_dict = {"BCB": bcb.fetch,
-#                "IPEA": ipea.fetch, 
-#                "CEPEA": cepea.fetch, 
-#                "COVID": covid.fetch, 
-#                "PNAD_COVID": pnad_covid.fetch, 
-#                "APPLE": mobility_apple.fetch, 
-#                "ONS": ons.fetch, 
-#                "BCB_EXP": bcb_exp.fetch}
+source_dict = {("FRED", "GERAL", "SERIES-TEMPORAIS"): fred_obs.fetch,
+               ("IBGE", "CN", "SERIES-TEMPORAIS"): ibge_obs.fetch,
+               ("IBGE", "PIM", "SERIES-TEMPORAIS"): ibge_obs.fetch,
+               ("IBGE", "PMC", "SERIES-TEMPORAIS"): ibge_obs.fetch,
+               ("IBGE", "PNAD", "SERIES-TEMPORAIS"): ibge_obs.fetch,
+               ("BCB", "VENC", "VENCIMENTOS"): bcb_vencimentos_obs.fetch,
+               ("IBGE", "IPCA", "INFLACAO"): inflation_obs.fetch,
+               ("IBGE", "IPCA15", "INFLACAO"): inflation_obs.fetch,
+               ("IBGE", "CORES", "INFLACAO"): nucleos_calculos_obs.add_cores,
+               ("IBGE", "CORES15", "INFLACAO"): nucleos_calculos_obs.add_cores}
 
 
-def fetch_obs(source: str, database: str, limit:Optional[int]=None) -> None:
-    """fetches and updates (inserts) observations of a particular source
-    (ex:BCB) and for last (limit) observations. If limit = None, all
-    observations are updated. Does the upserts through side effects
+def fetch_obs(source: str, survey: str, database: str, limit:Optional[int]=None,
+              ini: Optional[str]=None, end:Optional[str]=None) -> None:
+    """fetches and updates (inserts) observations of a particular sourcedb
+    (ex:IBGE, PNAD, SERIES-TEMPORAIS) and for last (limit)
+    observations. If limit = None, or withing date range ini and end,
+    or else all observations are updated. Does the upserts through
+    side effects
     """
     Usource = source.upper()
     Udatabase = database.upper()
+    Usurvey = survey.upper()
     start = pendulum.now().to_datetime_string()
-    tickers = fetch_series_list(Usource, Udatabase)
-    results = source_dict[(Usource, Udatabase)](tickers, limit=limit)
+    if (source, database) == ("IBGE", "INFLACAO"):
+        source_dict[(Usource, Usurvey, Udatabase)](Usurvey, ini=ini, end=end)
+    else:
+        tickers = fetch_series_list(Usource, Usurvey, Udatabase)
+        source_dict[(Usource, Usurvey, Udatabase)](tickers, limit=limit)
 
 
 if __name__ == "__main__":
     import sys
-    fetch_obs(sys.argv[1], sys.argv[2])
+    fetch_obs(sys.argv[1], sys.argv[2], sys.argv[3])

@@ -9,11 +9,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 # import from app
-from DB.transactions import fetch_by_ticker, delete_observations
+from DB.transactions import fetch_by_ticker, delete_observations, add_obs
 from DB.transactions import fetch_tbl, delete_tbl, create_tbl, modify_tbl
 from DB.transactions import fetch_all_series
-from DB.loaders.inflation.inflation_obs import fetch_obs
-from DB.loaders.inflation.nucleos_calculos import add_cores
+from DB.loaders.fetch_obs import fetch_obs
 
 router = APIRouter()
 
@@ -24,8 +23,9 @@ class Ind_obs(BaseModel):
     indicator: refers to all observations at a particular date for one
     indicator [IPCA, IPCA15] at a date
     """
-    date: datetime.date = Field(...)
-    indicator: str = Field(...)
+    survey: str = Field(...)
+    date_ini: datetime.date = Field(...)
+    date_end: datetime.date = Field(...)
 
 
 class Tabledb(BaseModel):
@@ -35,14 +35,6 @@ class Tabledb(BaseModel):
     ticker: str = Field(..., regex="^tbl\..+" )
     description: Optional[str] = Field(None)
     series: Optional[List[str]] = Field(None, regex="^.+\..+")
-
-
-# http methods
-# series
-# @router.get("/inflation/api/v0.1")
-# async def index():
-#     "Landing endpoint"
-#     return "Hello, this is my api!"
 
 
 # fetch resources
@@ -75,9 +67,15 @@ async def add_obs_indicator(indobs: Ind_obs):
     """
     add all observations for an indicator and a particular time as in indbos
     """
-    add_observations(indobs.indicator, (indobs.date).strftime("%Y-%m-%d"))
-    add_cores(indobs.indicator, (indobs.date).strftime("%Y-%m-%d"))
-    return f"{indobs.indicator} at {indobs.date} successfully added" 
+    ind = indobs.survey
+    core = "CORES" if ind == "IPCA" else "CORES15"
+    fetch_obs("IBGE", ind, "INFLACAO", 
+              ini=(indobs.date_ini).strftime("%Y-%m-%d"), 
+              end=(indobs.date_end).strftime("%Y-%m-%d"))
+    fetch_obs("IBGE", core, "INFLACAO", 
+              ini=(indobs.date_ini).strftime("%Y-%m-%d"),
+              end=(indobs.date_end).strftime("%Y-%m-%d"))
+    return f"{indobs.survey} from {indobs.date_ini} to {indobs.date_end} successfully added" 
 
 
 @router.delete("/api/v0.1/inflation")
@@ -85,10 +83,29 @@ async def delete_obs_indicator(indobs: Ind_obs):
     """
     the deletes all observations for an indicator a particular time as in indbos
     """
-    r = delete_observations(indobs.indicator, (indobs.date).strftime("%Y-%m-%d"))
+    ind = indobs.survey
+    core = "CORES" if ind == "IPCA" else "CORES15"
+
+    r = delete_observations("IBGE", ind, "INFLACAO",
+                            (indobs.date_ini).strftime("%Y-%m-%d"),
+                            (indobs.date_end).strftime("%Y-%m-%d"))
     if r == "ok":
-        return f"{indobs.indicator} at {indobs.date} successfully deleted"
-    return f"{indobs.indicator} at {indobs.date} no longer at the database"
+        print(f"{indobs.survey} at {indobs.date_ini} successfully deleted")
+    print(f"{indobs.survey} at {indobs.date_ini} no longer at the database")
+
+    r = delete_observations("IBGE", core, "INFLACAO",
+                            (indobs.date_ini).strftime("%Y-%m-%d"),
+                            (indobs.date_end).strftime("%Y-%m-%d"))
+    if r == "ok":
+        print(f"{ind} at {indobs.date_ini} successfully deleted")
+    print(f"{ind} at {indobs.date_ini} no longer at the database")
+
+    r = delete_observations("IBGE", core, "INFLACAO",
+                            (indobs.date_ini).strftime("%Y-%m-%d"),
+                            (indobs.date_end).strftime("%Y-%m-%d"))
+    if r == "ok":
+        print(f"{core} at {indobs.date_ini} successfully deleted")
+    print(f"{ind} at {indobs.date_ini} no longer at the database")
 
 
 # tables

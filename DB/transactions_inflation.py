@@ -29,10 +29,11 @@ def fetch_all(kind="VARIACAO", indicator="IPCA",
     """
     date_ini = dt.fromisoformat(date_ini) if date_ini is not None else dt.fromisoformat(DATE_INI)
     date_end = dt.fromisoformat(date_end) if date_end is not None else dt.fromisoformat(DATE_END)
+    sourcedb = db.SourceDB.get(source="IBGE",  survey=indicator, database="INFLACAO")
 
     dd = orm.select((o.data, o.value, o.series.ticker) for o in db.Observation
                     if (o.series.kind==kind and 
-                        o.series.indicator==indicator and 
+                        o.series.source==sourcedb and 
                         o.data >= date_ini and 
                         o.data <= date_end and 
                         o.series.group != "NUCLEO"))
@@ -56,13 +57,14 @@ def fetch_group(group="GRUPO", kind="VARIACAO", indicator="IPCA",
     date_ini = dt.fromisoformat(date_ini) if date_ini is not None else dt.fromisoformat(DATE_INI)
     date_end = dt.fromisoformat(date_end) if date_end is not None else dt.fromisoformat(DATE_END)
     Ugroup = group.upper()
-    Uindicator = indicator.upper()
+    sourcedb = db.SourceDB.get(source="IBGE", survey=indicator.upper(), 
+                               database="INFLACAO")
     
     if not ticker:
         dd = orm.select((o.data, o.value, o.series.description) for o in db.Observation
                     if (o.series.group==Ugroup and 
                         o.series.kind==kind and 
-                        o.series.indicator==Uindicator and 
+                        o.series.source==sourcedb and 
                         o.data >= date_ini and 
                         o.data <= date_end))
         df = pd.DataFrame(dd, columns=["date", "change", 
@@ -78,7 +80,7 @@ def fetch_group(group="GRUPO", kind="VARIACAO", indicator="IPCA",
         dd = orm.select((o.data, o.value, o.series.ticker) for o in db.Observation 
                             if (o.series.group==Ugroup and 
                                 o.series.kind==kind and 
-                                o.series.indicator==Uindicator and 
+                                o.series.source==sourcedb and 
                                 o.data >= date_ini and 
                                 o.data <= date_end))
         return pd.DataFrame(dd, columns=["date", "change", 

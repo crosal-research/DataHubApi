@@ -6,6 +6,7 @@ from typing import Optional
 import requests
 import pandas as pd
 import pendulum
+from pony import orm
 
 # import from app
 from DB.transactions import add_batch_obs
