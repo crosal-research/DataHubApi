@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 #import from aap
 from routers import inflation
 from routers import econseries
+from routers import tables
 
 
 app = FastAPI()
@@ -21,6 +22,7 @@ app.add_middleware(
 
 app.include_router(inflation.router)
 app.include_router(econseries.router)
+app.include_router(tables.router)
 
 @app.get("/")
 async def home():

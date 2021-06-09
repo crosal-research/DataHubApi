@@ -28,13 +28,13 @@ def process(url):
     units= resp['units']
     return f"{title}, {sea}, {freq}, {units}"
 
-urls = [build_fred(_key_fred, tck) for tck in tickers]
-Atickers = [f"FRED.{tck}" for tck in tickers]
+urls = [build_fred(_key_fred, tck) for tck in tickers[0]]
+Atickers = [f"FRED.{tck}" for tck in tickers[0]]
 
 with executor() as e:
     infos = list(e.map(process, urls))
 
 for num, tck in enumerate(Atickers):
-    add_series(tck, infos[num], "FRED", "GERAL", 'SERIES-TEMPORAIS')
+    add_series(tck, infos[num], "FRED", tickers[0][tck.split(".")[1]], 'SERIES-TEMPORAIS')
     
 

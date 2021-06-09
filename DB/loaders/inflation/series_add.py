@@ -112,6 +112,6 @@ srs = [[k, sd[k][0], "IBGE", sd[k][3], "Inflacao", sd[k][1], sd[k][2]] for k in 
 
 t0 = time.time()
 
-# [add_series(*s) for s in srs]     
+[add_series(*s) for s in srs]     
     
-# print(f"series added to database: {time.time() -t0} secs")    
+print(f"series added to database: {time.time() -t0} secs")    

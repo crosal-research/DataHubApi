@@ -19,21 +19,13 @@ router = APIRouter()
 class Ind_obs(BaseModel):
     """
     model to modifying, creating observations for a particular
-    indicator: refers to all observations at a particular date for one
-    indicator [IPCA, IPCA15] at a date
+    indicator: refers to all observations at a particular date for var in collection:
+ 
     """
-    limit: int = Field(...)
     source: str = Field(...)
-    database: str = Field(...)
+    survey: str = Field(...)
+    limit: int = Field(None)
 
-
-class Tabledb(BaseModel):
-    """
-    model for modifying tables
-    """
-    ticker: str = Field(..., regex="^tbl\..+" )
-    description: Optional[str] = Field(None)
-    series: Optional[List[str]] = Field(None, regex="^.+\..+")
 
 
 # fetch resources
@@ -66,48 +58,7 @@ async def add_obs_indicator(indobs: Ind_obs):
     """
     add all observations for an indicator and a particular time as in indbos
     """
-    fetch_obs.fetch_obs(indobs.source, indobs.database, indobs.limit)
-    return f"Source {indobs.source} and database {indobs.database} successfully added" 
+    fetch_obs.fetch_obs(indobs.source, indobs.survey, "SERIES-TEMPORAIS", limit=indobs.limit)
+    return f"Source {indobs.survey} and {indobs.survey} successfully added" 
 
 
-# tables
-@router.get("/api/v0.1/econseries/tables")
-async def get_table(ticker:str=Query(None)):
-    """
-    fetches all the info (tickers, description) for a 
-    table with ticker
-    """
-    return fetch_tbl(ticker)
-
-
-@router.post("/api/v0.1/econseries/tables")
-async def create_table(table:Tabledb):
-    """
-    creates a table with ticker, description, series
-    and adds into the database
-    """
-    status = create_tbl(table.ticker, table.description, table.series)
-    if status:
-        return f"Table {table.ticker} created!"
-    return f"Table {table.ticker} is not in the database"
-
-
-@router.put("/api/v0.1/econseries/tables")
-async def madify_table(table:Tabledb):
-    """
-    modifies a table by changing either the 
-    description or the series in the table
-    """
-    if (status:=modify_tbl(table.ticker, table.series)):
-        return f"Table {table.ticker} modified!"
-    return f"Table {table.ticker} not in the database"
-
-
-@router.delete("/api/v0.1/econseries/tables")
-async def delete_table(table:Tabledb):
-    """
-    deletes a table with a particular ticker
-    """
-    if (status:=delete_tbl(table.ticker)):
-        return f"Table {table.ticker} deleted!"
-    return f"Table {table.ticker} not in the database"

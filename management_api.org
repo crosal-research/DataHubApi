@@ -19,7 +19,7 @@ plug-and-play manner.
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=ipca15.core_DP&date_ini=2021-03-01&date_end=2021-05-01
+GET http://127.0.0.1:8000/api/v0.1/inflation?tickers=tbl.ipca_core&date_ini=2021-03-01&date_end=2021-05-01
 #+end_src
 
 
@@ -41,7 +41,6 @@ Content-Type: application/json
 
 }
 #+end_src
-
 
 
 *** DELETE observations
@@ -71,152 +70,6 @@ Content-Type: application/json
 : null
 
 
-** TABLES
-  :PROPERTIES:
-  :Object:   TABLES
-  :END:
-  
-*** GET TABLES
-   :PROPERTIES:
-   :Method:   GET
-   :END:
-   
-#+begin_src http :pretty
-GET http://96.126.101.177:8000/api/v0.1/inflation/tables?ticker=tbl.ipca_cores
-#+end_src
-
-#+RESULTS:
-#+begin_example
-{
-  "ticker": "TBL.IPCA_CORES",
-  "description": "TABLE A SER ENVIADA PARA BROADCAST (IPCA)",
-  "series": [
-    "IPCA.CORE_EXO",
-    "IBGE.IPCA/P/ALL/V/63/C315/7169",
-    "IPCA.CORE_DIFUSAO",
-    "IPCA.CORE_EX1",
-    "IPCA.CORE_APARADAS",
-    "IPCA.CORE_SERVICOS",
-    "IPCA.CORE_DURAVEIS",
-    "IPCA.CORE_MONITORADOS",
-    "IPCA.SERVICOS",
-    "IPCA.CORE_EX2",
-    "IPCA.CORE_P55",
-    "IPCA.CORE_TRADABLES",
-    "IPCA.CORE_APARADAS_SUAVIZADAS",
-    "IPCA.CORE_EX3",
-    "IPCA.CORE_LIVRES",
-    "IPCA.CORE_DP"
-  ]
-}
-#+end_example
-
-
-
-
-
-
-*** POST Tables
-
-   :PROPERTIES:
-   :Method:   POST
-   :END:
-   
-#+begin_src http
-POST http://127.0.0.1:8000/api/v0.1/inflation/tables
-Content-Type: application/json
-
-{
-	"ticker": "tbl.ipca_cores",
-	"description": "Table a ser enviada para Broadcast (IPCA)",
-	"series": [
-    "IBGE.IPCA/P/ALL/V/63/C315/7169",
-	"ipca.core_exo", 
-	"ipca.core_ex1", 
-	"ipca.core_ex2",
-	"ipca.core_ex3",
-	"ipca.servicos",
-	"ipca.core_servicos",
-	"ipca.core_monitorados",
-	"ipca.core_livres",
-	"ipca.core_duraveis",
-	"ipca.core_tradables",
-	"ipca.core_aparadas",
-	"ipca.core_aparadas_suavizadas",
-	"ipca.core_dp",
-	"ipca.core_p55", 
-    "ipca.core_difusao"]
-}
-#+end_src
-
-#+RESULTS:
-: HTTP/1.1 200 OK
-: date: Tue, 04 May 2021 17:13:37 GMT
-: server: uvicorn
-: content-length: 31
-: content-type: application/json
-: 
-: "Table tbl.ipca_cores created!"
-
-
-*** PUT observations
-   :PROPERTIES:
-   :Method:   PUT
-   :END:
-   
-#+begin_src http
-PUT http://96.126.101.177:8000/api/v0.1/inflation/tables
-Content-Type: application/json
-
-{
-	"ticker": "tbl.ipca_cores",
-	"description": "Tabela a ser enviada para Broadcast",
-	"series": [
-    "IBGE.IPCA/P/ALL/V/63/C315/7169",
-	"ipca.core_exo", 
-	"ipca.core_ex1", 
-	"ipca.core_ex2",
-	"ipca.core_ex3",
-	"ipca.servicos",
-	"ipca.core_servicos",
-	"ipca.core_monitorados",
-	"ipca.core_livres",
-	"ipca.core_duraveis",
-	"ipca.core_tradables",
-	"ipca.core_aparadas",
-	"ipca.core_aparadas_suavizadas",
-	"ipca.core_dp",
-	"ipca.core_p55", 
-    "ipca.core_difusao"]
-}
-#+end_src
-
-#+RESULTS:
-: HTTP/1.1 200 OK
-: date: Thu, 22 Apr 2021 21:33:29 GMT
-: server: uvicorn
-: content-length: 34
-: content-type: application/json
-: 
-: "Table tbl.ipca_cores modified!"
-
-
-*** DELETE Table Tt
-   :PROPERTIES:
-   :Method:   DELETE
-   :END:
-   
-#+header: :var ticker="tbl.ipcaa5_cores"
-#+begin_src http
-DELETE http://96.126.101.177:8000/api/v0.1/inflation/tables
-Content-Type: application/json
-
-{
-	"ticker": "tbl.ipca515_cores"
-}
-#+end_src
-
-
 * ECONSERIES API
 ** SERIES                                                                  
   :PROPERTIES:
@@ -229,12 +82,10 @@ Content-Type: application/json
    :END:
 
 #+begin_src http :pretty
-GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=fred.&date_ini=2012-01-01
+GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=fred.UNRATE&date_ini=2020-01-01
 #+end_src
 
 #+RESULTS:
-: date,FRED.UNRATE
-
 
 
 *** POST observations
@@ -243,19 +94,18 @@ GET http://127.0.0.1:8000/api/v0.1/econseries?tickers=fred.&date_ini=2012-01-01
    :END:
    
    
-#+header: :var source="fred" database="series-temporais" limit=10
+#+header: :var source="fred" survey="ECON" limit=10
 #+begin_src http
 POST http://127.0.0.1:8000/api/v0.1/econseries
 Content-Type: application/json
 
 {
 	"source": "${source}",
-	"database": "${database}",
+	"survey": "${survey}",
 	"limit": "${limit}"
 
 }
 #+end_src
-
 
 
 ** TABLES
@@ -516,6 +366,125 @@ Content-Type: application/json
 #+end_src
 
 
+
+* TABLES API
+
+** TABLES
+  :PROPERTIES:
+  :Object:   TABLES
+  :END:
+  
+*** GET TABLES
+   :PROPERTIES:
+   :Method:   GET
+   :END:
+   
+#+begin_src http :pretty
+GET http://127.0.0.1:8000/api/v0.1/tables?ticker=tbl.ipca_core
+#+end_src
+
+
+
+
+*** POST Tables
+
+   :PROPERTIES:
+   :Method:   POST
+   :END:
+   
+#+begin_src http
+POST http://127.0.0.1:8000/api/v0.1/tables
+Content-Type: application/json
+
+{
+	"ticker": "tbl.ipca_cores",
+	"description": "Table a ser enviada para Broadcast (IPCA)",
+	"series": [
+    "IBGE.IPCA/P/ALL/V/63/C315/7169",
+	"ipca.core_exo", 
+	"ipca.core_ex1", 
+	"ipca.core_ex2",
+	"ipca.core_ex3",
+	"ipca.servicos",
+	"ipca.core_servicos",
+	"ipca.core_monitorados",
+	"ipca.core_livres",
+	"ipca.core_duraveis",
+	"ipca.core_tradables",
+	"ipca.core_aparadas",
+	"ipca.core_aparadas_suavizadas",
+	"ipca.core_dp",
+	"ipca.core_p55", 
+    "ipca.core_difusao"]
+}
+#+end_src
+
+#+RESULTS:
+: HTTP/1.1 200 OK
+: date: Tue, 04 May 2021 17:13:37 GMT
+: server: uvicorn
+: content-length: 31
+: content-type: application/json
+: 
+: "Table tbl.ipca_cores created!"
+
+
+*** PUT observations
+   :PROPERTIES:
+   :Method:   PUT
+   :END:
+   
+#+begin_src http
+PUT http://96.126.101.177:8000/api/v0.1/tables
+Content-Type: application/json
+
+{
+	"ticker": "tbl.ipca_cores",
+	"description": "Tabela a ser enviada para Broadcast",
+	"series": [
+    "IBGE.IPCA/P/ALL/V/63/C315/7169",
+	"ipca.core_exo", 
+	"ipca.core_ex1", 
+	"ipca.core_ex2",
+	"ipca.core_ex3",
+	"ipca.servicos",
+	"ipca.core_servicos",
+	"ipca.core_monitorados",
+	"ipca.core_livres",
+	"ipca.core_duraveis",
+	"ipca.core_tradables",
+	"ipca.core_aparadas",
+	"ipca.core_aparadas_suavizadas",
+	"ipca.core_dp",
+	"ipca.core_p55", 
+    "ipca.core_difusao"]
+}
+#+end_src
+
+#+RESULTS:
+: HTTP/1.1 200 OK
+: date: Thu, 22 Apr 2021 21:33:29 GMT
+: server: uvicorn
+: content-length: 34
+: content-type: application/json
+: 
+: "Table tbl.ipca_cores modified!"
+
+
+*** DELETE Table Tt
+   :PROPERTIES:
+   :Method:   DELETE
+   :END:
+   
+#+header: :var ticker="tbl.ipcaa5_cores"
+#+begin_src http
+DELETE http://96.126.101.177:8000/api/v0.1/tables
+Content-Type: application/json
+
+{
+	"ticker": "tbl.ipca515_cores"
+}
+#+end_src
 
 
 * SEARCH

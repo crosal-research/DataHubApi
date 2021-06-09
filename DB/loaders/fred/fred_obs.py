@@ -11,6 +11,7 @@ import pendulum
 
 # imports from app
 from DB.transactions import add_batch_obs
+from DB.transactions import fetch_series_list
 
 
 __all__ = ["fetch"]
@@ -60,4 +61,8 @@ def fetch(tickers:str, limit: Optional[int] = None):
     print(time.time() - t0)
 
 
+if __name__ == "__main__":
+    tickers_eco = fetch_series_list("FRED", "ECO", "SERIES-TEMPORAIS")
+    tickers_fin = fetch_series_list("FRED", "FIN", "SERIES-TEMPORAIS")
+    fetch(tickers_eco + tickers_fin)
 

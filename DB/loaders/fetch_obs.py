@@ -5,7 +5,7 @@ from typing import Optional
 import pendulum
 
 # imports from app
-from DB.loaders.fred import fred_obs #bcb, cepea, ibge, ons, fred, ipea
+from DB.loaders.fred import fred_obs #bcb, cepea, ons, ipea
 from DB.loaders.inflation import inflation_obs
 from DB.loaders.inflation import nucleos_calculos_obs
 from DB.loaders.ibge import ibge_obs
@@ -18,7 +18,8 @@ __all__ = ["fetch_obs"]
 INI="1900-01-01"
 END="2100-12-31"
 
-source_dict = {("FRED", "GERAL", "SERIES-TEMPORAIS"): fred_obs.fetch,
+source_dict = {("FRED", "ECON", "SERIES-TEMPORAIS"): fred_obs.fetch,
+               ("FRED", "FIN", "SERIES-TEMPORAIS"): fred_obs.fetch,
                ("IBGE", "CN", "SERIES-TEMPORAIS"): ibge_obs.fetch,
                ("IBGE", "PIM", "SERIES-TEMPORAIS"): ibge_obs.fetch,
                ("IBGE", "PMC", "SERIES-TEMPORAIS"): ibge_obs.fetch,
@@ -50,5 +51,8 @@ def fetch_obs(source: str, survey: str, database: str, limit:Optional[int]=None,
 
 
 if __name__ == "__main__":
-    import sys
-    fetch_obs(sys.argv[1], sys.argv[2], sys.argv[3])
+    for k in source_dict:
+        if k[2] == "INFLACAO":
+            fetch_obs(k[0], k[1], k[2], ini="2012-01-01", end="2021-04-01")
+        else:
+            fetch_obs(*k)

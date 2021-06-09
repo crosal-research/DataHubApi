@@ -37,6 +37,7 @@ def fetch(tickers:list, limit:Optional=None):
     df = df if limit is None else df.tail(limit)
     df.replace(to_replace="^-", regex=True, inplace=True, value=pd.NA)
     
+    @orm.db_session
     def _add(tck: str):
         """
         Help function that upserts data on vencimentos,
@@ -48,6 +49,8 @@ def fetch(tickers:list, limit:Optional=None):
 
     [_add(tck) for tck in tickers]
 
+print("Dados de vencimento do titulos publicos inseridos")
+print("##################################################")
     
 
 

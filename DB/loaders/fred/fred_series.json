@@ -1,17 +1,21 @@
-["DGS10",
- "ICSA",
- "INDPRO",
- "PAYEMS",
- "CPIAUCSL",
- "CPILFESL",
- "UNRATE",
- "CIVPART",
- "VIXCLS",
- "T10YIE",
- "VXEWZCLS", 
- "PCEC96", 
- "PCEPILFE", 
- "PCEPI", 
- "USRECD", 
- "CFNAI", 
- "UMCSENT"]
+[
+    {
+        "UMCSENT": "ECON",
+        "CFNAI": "ECON",
+        "USRECD": "ECON",
+        "PCEPI": "ECON",
+        "PCEPILFE": "ECON",
+        "PCEC96": "ECON",
+        "VXEWZCLS": "FIN",
+        "T10YIE": "FIN",
+        "VIXCLS": "FIN",
+        "CIVPART": "ECON",
+        "UNRATE": "ECON",
+        "CPILFESL": "ECON",
+        "CPIAUCSL": "ECON",
+        "PAYEMS": "ECON",
+        "INDPRO": "ECON",
+        "ICSA": "ECON",
+        "DGS10": "FIN"
+    }
+]
