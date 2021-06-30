@@ -35,7 +35,7 @@ def insert():
     for col in df:
         input = (f"BCB.{col}", 
                  f"Vencimento dos Títulos {col} (R$mn)",
-                 "BCB", "VENC", "VENCIMENTOS")
+                 "BCB", "VENC", "TITULOS-PUBLICOS")
         add_series(*input)
 
 

@@ -1,0 +1,206 @@
+[
+    {
+        "1": "Receita Total. Resultado do Governo Central"
+    },
+    {
+        "11": "Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "111": "Imposto de Importacao, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "113": "IPI, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "112": "Imposto de Renda, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "114": "IOF, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "115": "Cofins, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "116": "PIS/PASEP, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "117": "CSLL, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "118": "CPMF, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "119": "CIDE Combustíveis, Receita Administrada pela RFB. Resultado do Governo Central"
+    },
+    {
+        "1110": "Outras receitas Admninstradas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "12": "Incentivos Fiscais. Resultado do Governo Central"
+    },
+    {
+        "13": "Arrecadação Líquida do RGPS. Resultado do Governo Central"
+    },
+    {
+        "14": "Receita não administradas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "141": "Concessões e Permissões, Receitas não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "142": "Dividendos e Participações, Receitas não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "143": "Contr. Plano de Seguridade Social do Servidor, Receitas não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "144": "Receitas de Exploração de Recursos Naturais, não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "145": "Receitas Próprias (fontes 50, 81 e 82), não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "146": "Receita de Contribuição do Salário Educação, não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "147": "Complemento para o FGTS (LC nº 110/01), não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "148": "Demais Receitas, não administratas pela RFB. Resultado do Governo Central"
+    },
+    {
+        "2": "Transferencias por reparticão de receita total. Resultado do Governo Central"
+    },
+    {
+        "21": "M/FPE/IPE-EE, Trensferecias do TN, RTN. Resultado do Governo Central"
+    },
+    {
+        "22": "Fundos Constitucionais, Transferencias, RTN. Resultado do Governo Central"
+    },
+    {
+        "221": "Repasse Total do Fundos Constitucionais, Transferencias RTN. Resultado do Governo Central"
+    },
+    {
+        "222": "Superávit dos Fundos Constitucionais, Transferencias, RTN. Resultado do Governo Central"
+    },
+    {
+        "23": "Transferência de Contribuição do Salário Educação. Resultado do Governo Central"
+    },
+    {
+        "24": "Transferencias de Exploração de Recursos Naturais. Resultado do Governo Central"
+    },
+    {
+        "25": "Cide - Comsustiveis. Resultado do Governo Central"
+    },
+    {
+        "26": "Demais transferencias por repartição de receitas. Resultado do Governo Central"
+    },
+    {
+        "3": "Receita Líquida. Resultado do Governo Central"
+    },
+    {
+        "4": "DESPESA TOTAL. Resultado do Governo Central"
+    },
+    {
+        "41": "Benefícios Previdenciários. Resultado do Governo Central"
+    },
+    {
+        "42": "Pessoal e Encargos Sociai. Resultado do Governo Central"
+    },
+    {
+        "43": "Outras Despesas Obrigatória. Resultado do Governo Central"
+    },
+    {
+        "431": "Abono e Seguro Desemprego, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "432": "Anistiado, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "433": "Apoio Fin. EE/M, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "434": "Benefícios de Legislação Especial e Indenizações, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "435": "Benefícios de Prestação Continuada da LOAS/RM, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "436": "Complemento para o FGTS (LC nº 110/01, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "437": "Créditos Extraordinários (exceto PAC), Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "438": "Compensação ao RGPS pelas Desonerações da Folha , Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "439": "Fabricação de Cédulas e Moeda, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4310": "FUNDEB (Complem. União}, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4311": "Fundo Constitucional DF (Custeio e Capital), Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4312": "Legislativo/Judiciário/MPU/DPU (Custeio e Capital) , Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4313": "Lei Kandir (LC nº 87/96 e 102/00) e FE, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4314": "Sentenças Judiciais e Precatórios (Custeio e Capital), Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4315": "Subsídios, Subvenções e Proagr, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4316": "Transferências AN, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4317": "Transferências Multas ANEE, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4318": "Impacto Primário do FIE, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4319": "Financiamento de Campanha Eleitoral, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "4320": "Demais Despesas Obrigatárias, Despesas Obrigatórias. Resultado do Governo Central"
+    },
+    {
+        "44": "Despesas do Poder Executivo Sujeitas à Programação Financeira. Resultado do Governo Central"
+    },
+    {
+        "441": "Obrigatórias com Controle de Fluxo. Resultado do Governo Central"
+    },
+    {
+        "442": "Despesas Discricionárias do Governo Central. Resultado do Governo Central"
+    },
+    {
+        "5": "Resultado do Governo Central, Acima da linha. Resultado do Governo Central"
+    },
+    {
+        "6": "Ajustes metodologicos, Governo Central. Resultado do Governo Central"
+    },
+    {
+        "61": "Ajuste Metodologico Itaipu. Resultado do Governo Central"
+    },
+    {
+        "62": "Ajuste Metodologico Caixa - Competência. Resultado do Governo Central"
+    },
+    {
+        "7": "Discrepancia Estatistica. Resultado do Governo Central"
+    },
+    {
+        "8": "Resultado Primario do Governo Central, Abaixo da Linha."
+    },
+    {
+        "9": "Juros Nonimais pagas pelo o Governo Central."
+    },
+    {
+        "10": "Resultado Nominal do Governo Central"
+    }
+]

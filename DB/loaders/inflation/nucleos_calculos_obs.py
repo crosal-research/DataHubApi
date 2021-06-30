@@ -1,12 +1,14 @@
 # import from system
 from typing import Optional
 import re
+from concurrent.futures import ProcessPoolExecutor
 
 # import from packages
 import pandas as pd
 import numpy as np
 from datetime import datetime as dt
 from pony import orm
+
 
 #import from app
 from DB.transactions_inflation import fetch_group, fetch_all
@@ -204,12 +206,11 @@ def add_cores(core:str, ini: Optional[str]=None,
         dpsub = fetch_group(group="SUBITEM", kind="PESO", date_ini=month, 
                             date_end=month, indicator=cpi, ticker=True) # needs to fetch all indices
 
-        #cores
         aggr_cores = [p55(month, dvsub, dpsub),
                       difusao(month, dvsub), 
                       core_ma(month, dvi, dpi), 
-                      core_smooth(month, dvi, dpi), #history dependent
-                      core_dp(month, dvi, dpi, dg), #history dependent
+                      core_smooth(month, dvi, dpi), 
+                      core_dp(month, dvi, dpi, dg), 
                       core_adhoc("EXO", dvs, dps, month),
                       core_adhoc("EX1", dvs, dps, month),
                       core_adhoc("EX2", dvs, dps, month),
@@ -222,11 +223,23 @@ def add_cores(core:str, ini: Optional[str]=None,
                       core_adhoc("SERVICOS_CORE", dvs, dps, month),
                       core_adhoc("INDUSTRIAIS", dvs, dps, month)]
 
-        cores_tickers = [f"{cpi}.core_p55", f"{cpi}.core_difusao", f"{cpi}.core_aparadas", f"{cpi}.core_aparadas_suavizadas", f"{cpi}.core_dp", 
-                         f"{cpi}.core_EXO", f"{cpi}.core_EX1", f"{cpi}.core_EX2", f"{cpi}.core_EX3", 
-                         f"{cpi}.core_monitorados", f"{cpi}.core_livres", f"{cpi}.core_tradables", f"{cpi}.core_duraveis", 
-                         f"{cpi}.servicos", f"{cpi}.core_servicos", 
+        cores_tickers = [f"{cpi}.core_p55",
+                         f"{cpi}.core_difusao", 
+                         f"{cpi}.core_aparadas", 
+                         f"{cpi}.core_aparadas_suavizadas", 
+                         f"{cpi}.core_dp", 
+                         f"{cpi}.core_EXO", 
+                         f"{cpi}.core_EX1", 
+                         f"{cpi}.core_EX2", 
+                         f"{cpi}.core_EX3", 
+                         f"{cpi}.core_monitorados", 
+                         f"{cpi}.core_livres", 
+                         f"{cpi}.core_tradables", 
+                         f"{cpi}.core_duraveis", 
+                         f"{cpi}.servicos", 
+                         f"{cpi}.core_servicos", 
                          f"{cpi}.core_industriais"]
+
 
         df = pd.DataFrame(data=[aggr_cores],
                           columns=[c.upper() for c in cores_tickers], index=[month]).dropna(axis=1)

@@ -7,3 +7,5 @@ bs4
 requests
 psycopg2
 univcorn[standard]
+suds-requests4
+olefile

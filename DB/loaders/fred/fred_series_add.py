@@ -1,6 +1,6 @@
 # import system
 from concurrent.futures import ThreadPoolExecutor as executor
-import json
+import json, os
 
 # import from packages
 import requests
@@ -8,12 +8,11 @@ import requests
 # import from app
 from DB.transactions import add_series
 
+
+
 with open("./configuration.json") as fp:
     config = json.load(fp)
 _key_fred = config["ApiKeys"]["fred"]
-    
-with open("./DB/loaders/fred/fred_series.json") as fp:
-    tickers = json.load(fp)
 
 
 def build_fred(key, ticker):
@@ -28,13 +27,22 @@ def process(url):
     units= resp['units']
     return f"{title}, {sea}, {freq}, {units}"
 
-urls = [build_fred(_key_fred, tck) for tck in tickers[0]]
-Atickers = [f"FRED.{tck}" for tck in tickers[0]]
 
-with executor() as e:
-    infos = list(e.map(process, urls))
+if __name__ == "__main__":
+    p = os.path.dirname(__file__)
+    with open(p + "/fred_series.json") as fp:
+        tickers = json.load(fp)
 
-for num, tck in enumerate(Atickers):
-    add_series(tck, infos[num], "FRED", tickers[0][tck.split(".")[1]], 'SERIES-TEMPORAIS')
+    urls = [build_fred(_key_fred, tck) for tck in tickers[0]]
+    Atickers = [f"FRED.{tck}" for tck in tickers[0]]
+
+    with executor() as e:
+        infos = list(e.map(process, urls))
+
+    for num, tck in enumerate(Atickers):
+        if tickers[0][tck.split(".")[1]] == "ECON":
+            add_series(tck, infos[num], "FRED", tickers[0][tck.split(".")[1]], 'SERIES-TEMPORAIS')
+        else:
+            add_series(tck, infos[num], "FRED", tickers[0][tck.split(".")[1]], 'FINANCE')
     
 

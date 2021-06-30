@@ -49,8 +49,8 @@ def fetch(tickers:list, limit:Optional=None):
 
     [_add(tck) for tck in tickers]
 
-print("Dados de vencimento do titulos publicos inseridos")
-print("##################################################")
+    print("Dados de vencimento do titulos publicos inseridos")
+    print("##################################################")
     
 
 

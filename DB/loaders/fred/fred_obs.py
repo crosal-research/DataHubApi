@@ -63,6 +63,6 @@ def fetch(tickers:str, limit: Optional[int] = None):
 
 if __name__ == "__main__":
     tickers_eco = fetch_series_list("FRED", "ECO", "SERIES-TEMPORAIS")
-    tickers_fin = fetch_series_list("FRED", "FIN", "SERIES-TEMPORAIS")
+    tickers_fin = fetch_series_list("FRED", "FRED-FIN", "FINANCE")
     fetch(tickers_eco + tickers_fin)
 

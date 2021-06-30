@@ -18,7 +18,11 @@ def _build_url(tck:str, limit=None) -> str:
         return f"http://api.sidra.ibge.gov.br/values/t/{tck_new}/n1/1/f/a"
     return f"http://api.sidra.ibge.gov.br/values/t/{tck_new}/p/last {limit}/n1/1/f/a"
 
-def _process(resp: requests.models.Response):
+def _process(resp: requests.models.Response)->pd.DataFrame:
+    """
+    Handles the sucessful response to a request to the ibge api.
+    Return a Dataframe per respoonse
+    """
     try:
         table = (re.compile("\d+")).findall(resp.url)[0]
         df = pd.DataFrame(json.loads((resp.content).decode())[1:]).loc[:,["D1C", "V"]].set_index("D1C")
