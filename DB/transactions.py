@@ -114,20 +114,17 @@ def fetch_info_by_ticker(ticker:str) -> pd.DataFrame:
     its ticker
     """
     obs = orm.select((s.ticker, 
-                      s.description, 
-                      s.group, 
-                      s.kind, 
-                      s.indicator) for s in db.Series if s.ticker==ticker.upper())
+                      s.description) for s in db.Series if s.ticker==ticker.upper())
     return pd.DataFrame(list(obs), 
                         columns=["ticker", 
-                                 "description", 
-                                 "group", 
-                                 "kind", 
-                                 'indicator'])
-
+                                 "description"]) 
 
 @orm.db_session
 def fetch_series_list(source:str, survey: str, database:str) -> List[str]:
+    """
+    Fetches from db as list of tickers of series that belong to a triade
+    (source, survey, database)
+    """
     src = db.Series.select(lambda s:  (s.source.source == source.upper() and
                                        s.source.survey == survey.upper() and
                                        s.source.database == database.upper()))
@@ -140,11 +137,11 @@ def fetch_by_ticker(tickers: List[str],
                     date_ini: Optional[str]=None, 
                     date_end: Optional[str]=None) -> pd.DataFrame:
     """
-    index = list of indexes
-    kind = [VARIACA0, PESO]
-    indicator =[IPCA, IPCA15]
-    date_int: example "2020-01-01
-    date_end: example "2020-04-01
+    Fetches observations between data_ini and date_end for the 
+    list of tickers and return a dataframe with them:
+    - index = list of indexes
+    - date_ini: example "2020-01-01
+    - date_end: example "2020-04-01
     """
     Utickers = [tck.upper() for tck in tickers]
     date_ini = dt.fromisoformat(date_ini) if date_ini is not None else dt.fromisoformat(DATE_INI)
@@ -166,9 +163,8 @@ def fetch_by_ticker(tickers: List[str],
 def delete_observations(source:str, survey:str, 
                         database:str, 
                         date_ini:str, date_end:str):
-    """
-    deletes all the obervations of pertaining to a indicator 
-    [IPCA, IPCA15] at a particular date
+    """deletes all the obervations of belonging to a triade (source,
+    survey, database) for observations between date_ini and date_end
     """
     date_ini = dt.fromisoformat(date_ini)
     date_end = dt.fromisoformat(date_end)
@@ -186,7 +182,7 @@ def delete_observations(source:str, survey:str,
         return "not available"
 
 
-# tables
+# Transactions with tables
 # upserts
 @orm.db_session
 def create_tbl(tticker:str, description: str, 
@@ -245,6 +241,9 @@ def delete_tbl(tticker:str) -> None:
 # fetch
 @orm.db_session
 def fetch_tbl(tticker:Optional[str]) -> None:
+    """
+    Fechtes a table with ticker 'tticker
+    """
     if tticker:
         Utticker = tticker.upper()
         if (tbl:=db.TableDb.get(tticker=Utticker)):
@@ -262,6 +261,10 @@ def fetch_tbl(tticker:Optional[str]) -> None:
 # fetch indexes to be ingested by search engine    
 @orm.db_session
 def fetch_all_series() -> pd.DataFrame:
+    """
+    Fetches all series within the database and dump it into
+    file to be used by the search engine
+    """
     srs = orm.select((s.ticker, 
                       s.description, 
                       s.kind,
