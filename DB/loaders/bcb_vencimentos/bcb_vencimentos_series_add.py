@@ -8,7 +8,7 @@ import pandas as pd
 # import from app
 from DB.transactions import add_series
 
-url = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
+URL = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
 
 
 def _process(resp:requests.models.Response) -> pd.DataFrame:
@@ -30,7 +30,7 @@ def insert():
     insert the series from vencimentos into the DataBase
     """
     global input
-    resp = requests.get(url)
+    resp = requests.get(URL)
     df = _process(resp).columns
     for col in df:
         input = (f"BCB.{col}", 
@@ -39,7 +39,8 @@ def insert():
         add_series(*input)
 
 
-insert()              
+if __name__ == "__main__":
+    insert()              
 
 
     

@@ -16,10 +16,14 @@ from DB.db import db
 __all__ = ['fetch']
 
 
-url = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
+URL = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
 
 
 def _process(resp:requests.models.Response):
+    """
+    process response from csv-file with information about
+    public bonds aggregate maturities
+    """
     txt = [l.split(";") for l in (resp.text).split("\n")]
     df = pd.DataFrame(txt).iloc[3:-3, :-1]
     cols = [f"BCB.{col}" for col in df.iloc[0,:].values]
@@ -32,7 +36,11 @@ def _process(resp:requests.models.Response):
 
 
 def fetch(tickers:list, limit:Optional=None):
-    resp= requests.get(url)
+    """
+    Fetches updated information on public bond's maturity. Prior to
+    insert info, erases the old information
+    """
+    resp= requests.get(URL)
     df = _process(resp)
     df = df if limit is None else df.tail(limit)
     df.replace(to_replace="^-", regex=True, inplace=True, value=pd.NA)

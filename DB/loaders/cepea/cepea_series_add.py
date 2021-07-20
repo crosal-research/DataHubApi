@@ -9,6 +9,7 @@
 
 # import form the system
 from concurrent.futures import ThreadPoolExecutor as executor
+from typing import List
 
 # import from packages
 import requests
@@ -30,7 +31,7 @@ tickers = [f"cepea.{n}" for _, n in info]
 
 def build_url(name:str, number:int) -> str:
     """
-    builds the relevant url for the security in case
+    builds the relevant url for the ticker in case
     """
     return f'https://www.cepea.esalq.usp.br/br/indicador/series/{name}.aspx?id={number}'
 
@@ -46,7 +47,10 @@ def process(resp:requests.models.Response) -> pd.DataFrame:
     print(f"{resp.url} could not be reached")
 
 
-def ingest_series(info):
+def ingest_series(info: List[tuple]) -> None:
+    """
+    adds series information into the database
+    """
     with requests.session() as session:
         with executor() as e:
             urls = []

@@ -15,6 +15,11 @@ URL = "https://balanca.economia.gov.br/balanca/IPQ/arquivos/Dados_totais_mensal.
 
 
 def fetch(tickers: List[str], limit:Optional[int]=None):
+    """
+    fetches the observations from the comex. Data is obtained from
+    spreadsheet as found in URL. If limit different than None, adds all observations
+    for tickers list, else only the last n-limit observations
+    """
     srs = [tck.split(".")[1] for tck in tickers]
     resp = requests.get(URL, verify=False)
     if resp.ok:

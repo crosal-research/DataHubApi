@@ -1,6 +1,6 @@
 # import system
 from concurrent.futures import ThreadPoolExecutor as executor
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime as dt
 import time, json
 
@@ -20,9 +20,11 @@ with open("./configuration.json") as fp:
     config = json.load(fp)
 
 
-
 def build_fred(key, ticker, limit: Optional[int]=None):
-
+    """
+    builds url to fetch observations, depending on whether
+    fetches all observations or only the n-limit last.
+    """
     if not limit:
         return f"https://api.stlouisfed.org/fred/series/observations?" + \
             f"series_id={ticker}&api_key={key}&file_type=json"
@@ -31,15 +33,23 @@ def build_fred(key, ticker, limit: Optional[int]=None):
             f"series_id={ticker}&api_key={key}&file_type=json" + \
             "&limit=10&sort_order=desc"
 
-def process(resp):
+
+def process(resp: requests.models.response) -> pd.DataFrame:
+    """
+    processes (handles) the response from the fred's api
+    and returns dataframe with processed observations
+    """
     dj = resp.json()["observations"]
     df = pd.DataFrame(dj).iloc[:, [2,3]].set_index(["date"])
     df.index = [dt.strptime(i, "%Y-%m-%d") for i in df.index]
     return (df.applymap(lambda v: float(v) if v != "." else None)).sort_index()
 
 
-def fetch(tickers:str, limit: Optional[int] = None):
-    global key
+def fetch(tickers: List[str], limit: Optional[int] = None) -> None:
+    """
+    fetches observations from fred's api for tickers. If limit is None, add
+    full observations, else the last n-limit observations.
+    """
     key = config['ApiKeys']['fred']
     urls =[build_fred(key, tck.split(".")[1], limit) for tck in tickers]
     with requests.session() as session:

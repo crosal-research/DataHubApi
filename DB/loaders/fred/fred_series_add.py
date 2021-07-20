@@ -14,12 +14,20 @@ with open("./configuration.json") as fp:
     config = json.load(fp)
 _key_fred = config["ApiKeys"]["fred"]
 
-
-def build_fred(key, ticker):
+def build_fred(key:str, ticker:str):
+    """
+    builds url string for a particular ticker in order to fetch
+    series informations
+    """
     return f"https://api.stlouisfed.org/fred/series?series_id={ticker}"  \
         + f"&api_key={key}&file_type=json"
 
-def process(url):
+def _process(url: str):
+    """
+    fetch and process the response from fred's api
+    in order to grab the information pertaining to
+    a particular series
+    """
     resp = requests.get(url).json()["seriess"][0]
     sea = resp['seasonal_adjustment']
     title = resp['title']
@@ -37,7 +45,7 @@ if __name__ == "__main__":
     Atickers = [f"FRED.{tck}" for tck in tickers[0]]
 
     with executor() as e:
-        infos = list(e.map(process, urls))
+        infos = list(e.map(_process, urls))
 
     for num, tck in enumerate(Atickers):
         if tickers[0][tck.split(".")[1]] == "ECON":

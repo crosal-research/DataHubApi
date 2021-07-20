@@ -284,6 +284,10 @@ remove = {"tickers":
 
 
 def _cleasing(series: Optional[dict], freq:list) -> dict:
+    """
+    Keep series to be added in the db based on not been in series
+    and have freq
+    """
     if series is not None:
         if series["freq"] in freq:
             if series["final"].year == 2021:
@@ -292,17 +296,25 @@ def _cleasing(series: Optional[dict], freq:list) -> dict:
                         return series
 
 
-def process_info(resp: suds.sudsobject) -> dict:
-        last = resp.ultimoValor
-        return dict(fonte = str(resp.fonte),
-                    gestor = str(resp.gestorProprietario),
-                    freq = str(resp.periodicidadeSigla),
-                    nome = str(resp.nomeCompleto),
-                    number = int(resp.oid),
-                    final = dt(last.ano, last.mes, last.dia))
+def _process_info(resp: suds.sudsobject) -> dict:
+    """
+    process resp from suds response (last observation)
+    and grabs information for the series
+    """
+    last = resp.ultimoValor
+    return dict(fonte = str(resp.fonte),
+                gestor = str(resp.gestorProprietario),
+                freq = str(resp.periodicidadeSigla),
+                nome = str(resp.nomeCompleto),
+                number = int(resp.oid),
+                final = dt(last.ano, last.mes, last.dia))
 
 
-def fetch_series(tickers: List[str]) -> dict:
+def fetch_series(tickers: List[str]) -> List[dict]:
+    """
+    Fetches the meta information for ticker list and returns
+    a list of dictionaries with the information
+    """
     with requests.Session() as session:
         c = suds.client.Client(
             'https://www3.bcb.gov.br/sgspub/JSP/sgsgeral/FachadaWSSGS.wsdl',
@@ -312,7 +324,7 @@ def fetch_series(tickers: List[str]) -> dict:
             try:
                 resp = c.service.getUltimoValorVO(tck)
                 if resp is not None:
-                    return process_info(resp)
+                    return _process_info(resp)
             except:
                 tcks_off.append(tck)
 
@@ -322,6 +334,11 @@ def fetch_series(tickers: List[str]) -> dict:
 
 
 def final_series():
+    """
+    Generates the final list of series to be used (inserted)
+    in the database. Raw input (by side effect) comes from 
+    file codigos.xlsx
+    """
     tickers = pd.read_excel(os.path.abspath(os.path.dirname(__file__)) +"./codigos.xlsx", 
                         header=[0]).values.flatten()
     # tickers = pd.read_excel("./codigos.xlsx", 
@@ -337,7 +354,7 @@ def final_series():
 
 def series_ingestion(series:List[dict]) -> None:
     """
-    add series for bcb into the data base
+    add series for bcb into the database
     """
     for srs in series:
         try:

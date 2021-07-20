@@ -87,6 +87,11 @@ def process(resp:str, limit:Optional[int]=None) -> pd.DataFrame:
         print(f"Could not reach {resp.url}")
 
 def fetch(tickers:List[str], limit:Optional[int]=None):
+    """
+    list of the tickers of ipea's series for which observations
+    are update/fetched. If limit is None, fetch all observations,
+    else fetches only the last limit observations
+    """
     t0 = time.time()
     urls =[build_url(tck.split(".")[1]) for tck in tickers]
     with requests.session() as session:

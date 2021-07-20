@@ -20,7 +20,10 @@ series = {'EXP_DESSAZONALIZADA_QUANTUM': "Index de volume das exportações com 
 URL = "https://balanca.economia.gov.br/balanca/IPQ/arquivos/Dados_totais_mensal.csv"
 
 
-def fetch_series(url:str):
+def _fetch_series(url:str) -> pd.DataFrame:
+    """fetches the series information from comex. Data is obtained from
+    spreadsheet as found in URL. 
+    """
     resp = requests.get(url, verify=False)
     if resp.ok:
         df = pd.read_csv(StringIO(resp.text), delimiter=";", decimal=",")
@@ -34,8 +37,11 @@ def fetch_series(url:str):
             for col in df_final.columns]
 
 
-def ingest_series(url: str):
-    srs = fetch_series(url)
+def ingest_series(url: str) -> None:
+    """
+    adds series information in the database.
+    """
+    srs = _fetch_series(url)
     [add_series(*s) for s in srs]
 
 

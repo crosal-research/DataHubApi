@@ -13,6 +13,10 @@ import pendulum
 from DB.transactions import add_batch_obs
 
 def _build_url(tck:str, limit=None) -> str:
+    """
+    builids the write url string to fetch observations, according to
+    ibge's ipea. 
+    """
     tck_new = tck.split(".")[1]
     if not limit:
         return f"http://api.sidra.ibge.gov.br/values/t/{tck_new}/n1/1/f/a"
@@ -42,7 +46,11 @@ def _process(resp: requests.models.Response)->pd.DataFrame:
 
 
 def fetch(tickers:list, limit=None) -> None:
-    global urls
+    """
+    Fetch the observations for tickers list of ibge's series.
+    Limit defines the last n-limit observations to be fetched, where 
+    None means all observations.
+    """
     t1 = time.time()
     print(t1)
     urls = [_build_url(tck) for tck in tickers]

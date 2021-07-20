@@ -20,8 +20,8 @@ today = pl.today()
 
 def fetch_sheet(date:Optional[dt]=today) -> Optional[pd.DataFrame]:
     """fetches numbers from Treasury Monthly results performing a series
-    of request until finding the appropriate url and for finally
-    fetching the spreadsheet. data format is "%Y/%m"
+    of requests until finding the appropriate url is disclosed and
+    finally fetching the spreadsheet. data format is "%Y/%m"
     """
     dat = date.format("Y/M")
     origin = f"https://www.tesourotransparente.gov.br/publicacoes/boletim-resultado-do-tesouro-nacional-rtn/{dat}"
@@ -54,8 +54,8 @@ def fetch_sheet(date:Optional[dt]=today) -> Optional[pd.DataFrame]:
 
 def fetch(tickers:List[str], limit:Optional[int]=None):
     """
-    combatibilizar tickers na base de dados com aqueles construidos a
-    partir da planilha do tesourno
+    Fetches observations of list of tickers for stn 
+    in the database
     """
     def _add_obs(df: pd.DataFrame, limit:Optional[int]=None) -> None:
         """

@@ -14,7 +14,6 @@ echo -e "--------\n"
 
 
 # Series
-# Inflation Database
 # # sets up series into the Database
 echo "Building up series..."
 python3 -m DB.loaders.fred.fred_series_add
@@ -44,7 +43,7 @@ echo -e "--------\n"
 # Observations
 echo "Loading observations..."
 python3 -m DB.loaders.fetch_obs
-echo "Done with setting up!"
+echo "Done with Observations!"
 echo -e "--------\n"
 
 
@@ -52,6 +51,7 @@ echo -e "--------\n"
 # sets up of basic tables into the Database
 echo "Build up built-in tables..."
 python3 -m DB.loaders.inflation.add_tables
-echo "Done with cores"
+echo "Done with tables\n"
+
 echo -e "--------\n"
 echo "Done with setting up!"

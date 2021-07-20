@@ -37,8 +37,7 @@ info = {"77":"milho",
 
 
 def build_url(ticker) -> str:
-    """builds the relevant url for the security in case
-
+    """builds the relevant url for the ticker in case
     """
     number = ticker.split(".")[1]
     return f'https://www.cepea.esalq.usp.br/br/indicador/series/{info[number]}.aspx?id={number}'
@@ -46,7 +45,7 @@ def build_url(ticker) -> str:
 
 def process(resp:requests.models.Response, limit=None) -> pd.DataFrame:
     """
-    fetchs the series related to the url used as input. Return a 
+    fetches the series related to the url used as input. Return a 
     dataframe
     """
     if resp.ok:
