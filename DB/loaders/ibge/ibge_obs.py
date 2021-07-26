@@ -51,23 +51,15 @@ def fetch(tickers:list, limit=None) -> None:
     Limit defines the last n-limit observations to be fetched, where 
     None means all observations.
     """
-    t1 = time.time()
-    print(t1)
     urls = [_build_url(tck) for tck in tickers]
     with requests.session() as session:
         with executor() as e:
             dfs = list(e.map(lambda url: _process(session.get(url)), urls))
 
-    print("###################################################")
-    print(f"Done downloading ibge data: {time.time() - t1} seconds")
-
     def _upsert_obs(z):
         try:
             add_batch_obs(*z)
-            print(f"{z[0]} added to the database")
         except:
             print(f"{z[0]} resulted in a empty dataframe")
-
     [_upsert_obs(dz) for dz in zip(tickers, dfs)]
-    print(f"Done updating ibge data: {time.time() - t1} seconds")
 ##############################MAIN##############################

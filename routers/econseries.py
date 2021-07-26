@@ -20,12 +20,11 @@ class Ind_obs(BaseModel):
     """
     model to modifying, creating observations for a particular
     indicator: refers to all observations at a particular date for var in collection:
- 
     """
     source: str = Field(...)
     survey: str = Field(...)
+    database: str = Field(...)
     limit: int = Field(None)
-
 
 
 # fetch resources
@@ -58,7 +57,11 @@ async def add_obs_indicator(indobs: Ind_obs):
     """
     add all observations for an indicator and a particular time as in indbos
     """
-    fetch_obs.fetch_obs(indobs.source, indobs.survey, "SERIES-TEMPORAIS", limit=indobs.limit)
-    return f"Source {indobs.survey} and {indobs.survey} successfully added" 
-
+    print(f"{indobs.source}, {indobs.survey}, {indobs.database} and {indobs.limit}")
+    try:
+        fetch_obs.fetch_obs(indobs.source, indobs.survey, 
+                            indobs.database, limit=indobs.limit)
+        return f"Source {indobs.survey}, {indobs.survey} and {indobs.database} successfully added" 
+    except:
+        print("here")
 

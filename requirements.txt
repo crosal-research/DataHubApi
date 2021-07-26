@@ -6,6 +6,7 @@ pendulum
 bs4
 requests
 psycopg2
-univcorn[standard]
+uvicorn[standard]
 suds-requests4
 olefile
+pyyaml

@@ -12,6 +12,7 @@
 from concurrent.futures import ThreadPoolExecutor as executor
 import time
 from typing import Optional
+import logging, logging.config
 
 # import from packages
 import requests
@@ -25,6 +26,11 @@ from DB.transactions import add_obs
 
 __all__ = ["fetch", "tickers"]
 
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
+
+
 t1 = time.time()
 
 
@@ -33,7 +39,6 @@ info = {"77":"milho",
         "111": "etanol-diario-paulinia", 
         "2":"boi-gordo"}
 
-# tickers = [f"cepea.{n}" for _, n in info]
 
 
 def build_url(ticker) -> str:
@@ -57,9 +62,9 @@ def process(resp:requests.models.Response, limit=None) -> pd.DataFrame:
             df.index = pd.to_datetime(df.index)
             return df.applymap(lambda v: float(v)) if limit is None else df.applymap(lambda v: float(v)).tail(limit)
         except:
-            print(f"Couldn't not process response form {resp.url}")
+            logger.error(f"Could not process data from {resp.url}")
     else:
-        print("Could not reaches {resp.url}")
+        logger.error(f"Could not reache {resp.url}")
 
 
 def fetch(tickers: list, limit: Optional[int]) -> None:
@@ -78,8 +83,5 @@ def fetch(tickers: list, limit: Optional[int]) -> None:
         for ind in df.index:
             add_obs(tck, ind.to_pydatetime(), df.loc[ind, "value"])
     
-    print("################################################################")
-    print(f"series from cepea added to the database:{time.time()-t1}")    
-
 ##############################Main##############################
 

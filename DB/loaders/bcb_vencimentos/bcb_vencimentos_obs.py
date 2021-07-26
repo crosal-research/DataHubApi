@@ -1,6 +1,8 @@
 # import from python system
 from concurrent.futures import ThreadPoolExecutor as executor
 from typing import Optional
+import logging, logging.config
+
 
 # import from packages
 import requests
@@ -14,6 +16,10 @@ from DB.db import db
 
 
 __all__ = ['fetch']
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 
 URL = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
@@ -41,6 +47,8 @@ def fetch(tickers:list, limit:Optional=None):
     insert info, erases the old information
     """
     resp= requests.get(URL)
+    if not resp.ok:
+        logging.error(f"Unable to fetch file from {URL}")
     df = _process(resp)
     df = df if limit is None else df.tail(limit)
     df.replace(to_replace="^-", regex=True, inplace=True, value=pd.NA)
@@ -56,12 +64,3 @@ def fetch(tickers:list, limit:Optional=None):
         add_batch_obs(tck, df.loc[: ,[tck]].dropna(axis=0))
 
     [_add(tck) for tck in tickers]
-
-    print("Dados de vencimento do titulos publicos inseridos")
-    print("##################################################")
-    
-
-
-    
-
-    

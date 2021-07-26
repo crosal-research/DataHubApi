@@ -62,12 +62,13 @@ def fetch_obs(source: str, survey: str, database: str, limit:Optional[int]=None,
     Udatabase = database.upper()
     Usurvey = survey.upper()
     start = pendulum.now().to_datetime_string()
+    print(f"Retrieving data from {Usource}, {Usurvey} and {Udatabase}...")
     if (source, database) == ("IBGE", "INFLACAO"):
         source_dict[(Usource, Usurvey, Udatabase)](Usurvey, ini=ini, end=end)
     else:
         tickers = fetch_series_list(Usource, Usurvey, Udatabase)
         source_dict[(Usource, Usurvey, Udatabase)](tickers, limit=limit)
-
+    print(f"Done retrieving data from {Usource}, {Usurvey} and {Udatabase}")
 
 if __name__ == "__main__":
     for k in source_dict:

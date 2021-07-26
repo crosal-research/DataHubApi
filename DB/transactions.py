@@ -1,8 +1,10 @@
 # import from system
-import re, json
+import re, json 
+import logging, logging.config
 from typing import Optional, List
 from datetime import datetime as dt
 from concurrent.futures import ThreadPoolExecutor as executor
+
 
 # import from packages
 import pandas as pd
@@ -10,6 +12,11 @@ from pony import orm
 
 #import from app
 from DB.db import db
+
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 # Constants
 DATE_INI = "1900-01-01" # good for when no initial date is provided
@@ -30,10 +37,10 @@ def add_source(source:str, description:str, survey: str,
                               database=Udatabase)) is None:
         db.SourceDB(source=Usource, description=description, 
                     survey=Usurvey, database=Udatabase)
-        print(f"New source ({Usource}, {Usurvey}, {Udatabase}) added to the Database")
+        logger.info(f"New source ({Usource}, {Usurvey}, {Udatabase}) added to the Database")
     else:
         src.description = description
-        print(f"SourceDB ({Usource}, {Usurvey}, {Udatabase}) already in the Database. Description Updated")
+        logger.info(f"SourceDB ({Usource}, {Usurvey}, {Udatabase}) already in the Database. Description Updated")
 
 
 @orm.db_session
@@ -57,20 +64,20 @@ def add_series(ticker:str, description:str, source: str, survey: str, database:s
             db.SeriesInflation(ticker=Uticker, description=Udescription, 
                                group=Ugroup, kind=Ukind, 
                                source=Usrc)
-            print(f"Series {ticker} added to the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
+            logger.info(f"Series {ticker} added to the Database: {(Usrc.source, Usrc.survey, Usrc.database)}")
         else:
             tck.description = Udescription
             tck.group = Ugroup
             tck.kind = Ukind
-            print(f"Series {ticker} updated in the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
+            logger.info(f"Series {ticker} updated in the Database: {(Usrc.source, Usrc.survey, Usrc.database)}")
     else: # if ticker doesn't belong to database inflacao
         if (tck:= db.Series.get(ticker=Uticker)) is None:
             db.Series(ticker=Uticker, description=Udescription, 
                       source=db.SourceDB.get(source=Usource, survey=Usurvey, database=Udatabase))
-            print(f"Series {ticker} added to the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
+            logger.info(f"Series {ticker} added to the Database: {(Usrc.source, Usrc.survey, Usrc.database)}")
         else:
             tck.description = Udescription
-            print(f"Series {ticker} updated in the Database {(Usrc.source, Usrc.survey, Usrc.database)}")
+            logger.info(f"Series {ticker} updated in the Database: {(Usrc.source, Usrc.survey, Usrc.database)}")
 
 
 @orm.db_session        
@@ -90,7 +97,7 @@ def add_obs(ticker:str, data:dt, value:Optional[float]) -> None:
         else:
             db.Observation(series=srs, data=data, value=value)
     else:
-        print(f"Ticker {Uticker} is not in the database")
+        logger.warning(f"Ticker {Uticker} is not in the database")
 
 
 def add_batch_obs(ticker:str, df:pd.DataFrame):
@@ -101,8 +108,9 @@ def add_batch_obs(ticker:str, df:pd.DataFrame):
     """
     if df.shape[1] == 1:
         [add_obs(ticker.upper(), ind, float(df.loc[ind].values)) for ind in df.index]
+        logger.info(f"Observations of ticker {ticker} successfully inserted")
     else:
-        print(f"Data Frame with of {ticker} has wrong dimension")
+        logger.error(f"Data Frame with of {ticker} has wrong dimension")
 
 
 

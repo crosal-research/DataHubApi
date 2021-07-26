@@ -10,6 +10,7 @@
 # import form the system
 from concurrent.futures import ThreadPoolExecutor as executor
 from typing import List
+import logging, logging.config
 
 # import from packages
 import requests
@@ -18,6 +19,10 @@ import pandas as pd
 
 #app imports
 from DB.transactions import add_series
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 
 # series to be included
@@ -44,7 +49,8 @@ def process(resp:requests.models.Response) -> pd.DataFrame:
     if resp.ok:
         ole = olefile.OleFileIO(resp.content)
         return  pd.read_excel(ole.openstream("Workbook"))
-    print(f"{resp.url} could not be reached")
+    logger.error(f"Unable to fetch data from {resp.url}")
+    
 
 
 def ingest_series(info: List[tuple]) -> None:
@@ -60,8 +66,6 @@ def ingest_series(info: List[tuple]) -> None:
 
     for n,tck in enumerate(tickers):
         add_series(tck, dfs[n].columns[0], "CEPEA", "AGRI", "SERIES-TEMPORAIS")
-
-    print("series from cepea added to the database")    
 
 
 if __name__ == '__main__':

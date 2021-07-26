@@ -1,5 +1,7 @@
 # import from python system
 from concurrent.futures import ThreadPoolExecutor as executor
+import logging, logging.config
+
 
 # import from packages
 import requests
@@ -7,6 +9,10 @@ import pandas as pd
 
 # import from app
 from DB.transactions import add_series
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 URL = 'https://www4.bcb.gov.br/pom/demab/cronograma/vencdata_csv.asp?'
 
@@ -29,8 +35,9 @@ def insert():
     """
     insert the series from vencimentos into the DataBase
     """
-    global input
     resp = requests.get(URL)
+    if not resp.ok:
+        logging.error(f"Unable to fetch file from {URL}")
     df = _process(resp).columns
     for col in df:
         input = (f"BCB.{col}", 
@@ -41,8 +48,3 @@ def insert():
 
 if __name__ == "__main__":
     insert()              
-
-
-    
-
-    

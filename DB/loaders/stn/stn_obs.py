@@ -1,8 +1,8 @@
-
 # import from the system
 from typing import Optional, List
 from datetime import datetime as dt
 import json
+import logging, logging.config
 
 # imports from packages
 import requests
@@ -13,8 +13,11 @@ import pendulum as pl
 #import from app
 from DB.transactions import add_obs
 
-
 __all__ = ["fetch_obs"]
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 today = pl.today()
 
@@ -46,10 +49,13 @@ def fetch_sheet(date:Optional[dt]=today) -> Optional[pd.DataFrame]:
                 url = link.attrs["href"]
                 break
     res = requests.get(url)
-    content = bs(res.text, "html.parser")
-    new_url = content.find_all("frame")[0].attrs["src"]
-    return pd.read_excel(new_url, sheet_name="1.1", index_col=[0], header=[0],
+    if not res.ok:
+        content = bs(res.text, "html.parser")
+        new_url = content.find_all("frame")[0].attrs["src"]
+        return pd.read_excel(new_url, sheet_name="1.1", index_col=[0], header=[0],
                              skiprows=[0, 1, 2, 3, 73, 74, 75, 76, 77, 78, 79, 80]).T
+    else:
+        logger.error(f"Unable to reach {res.url}")
 
 
 def fetch(tickers:List[str], limit:Optional[int]=None):

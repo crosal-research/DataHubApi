@@ -1,12 +1,20 @@
 # import from system
 from datetime import datetime as dt
 from io import StringIO
+import logging
+import logging.config
+
 # import from packages
 import pandas as pd
 import requests
 
 # import from app
 from DB.transactions import add_series
+
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 
 series = {'EXP_DESSAZONALIZADA_QUANTUM': "Index de volume das exportações com ajuste sazonal. Brasil" , 
@@ -28,7 +36,7 @@ def _fetch_series(url:str) -> pd.DataFrame:
     if resp.ok:
         df = pd.read_csv(StringIO(resp.text), delimiter=";", decimal=",")
     else:
-        print("Data not available")
+        logger.error(f"data from {resp.url} in not available")
     
     df["dates"] = df.loc[:, ["CO_ANO", "CO_MES"]].apply(lambda x: dt(x[0], x[1], 1), axis=1)
     df["series"] = df.loc[:, ["TIPO", "TIPO_INDICE"]].apply(lambda x: f"{x[0]}_{x[1]}", axis=1)

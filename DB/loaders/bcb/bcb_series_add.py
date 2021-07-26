@@ -4,6 +4,7 @@ from typing import Optional, List
 from datetime import datetime as dt
 import time, pickle, os
 
+
 # import from packages
 import requests
 import pandas as pd
@@ -13,7 +14,9 @@ import suds_requests
 # import from app
 from DB.transactions import add_series
 
+
 __all__ = ['series_add']
+
 
 tcks_off = []
 
@@ -360,9 +363,9 @@ def series_ingestion(series:List[dict]) -> None:
         try:
             add_series("BCB." + str(srs['number']), 
                        srs['nome'], 
-                       *gestores[srs['gestor']]) 
+                       *gestores[srs['gestor']])
         except:
-            print(f"Unable to add series BCB.{srs['number']}")
+            logger.error(f"Unable to add series BCB.{srs['number']}")
 
 
 

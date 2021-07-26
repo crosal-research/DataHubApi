@@ -5,6 +5,8 @@ from datetime import datetime as dt
 import time, json
 
 # imports packages
+import yaml
+from yaml.loader import SafeLoader
 import requests
 import pandas as pd
 import pendulum
@@ -16,8 +18,8 @@ from DB.transactions import fetch_series_list
 
 __all__ = ["fetch"]
 
-with open("./configuration.json") as fp:
-    config = json.load(fp)
+with open("./configuration.yaml") as f:
+    config = yaml.load(f, Loader=SafeLoader)
 
 
 def build_fred(key, ticker, limit: Optional[int]=None):
@@ -34,7 +36,7 @@ def build_fred(key, ticker, limit: Optional[int]=None):
             "&limit=10&sort_order=desc"
 
 
-def process(resp: requests.models.response) -> pd.DataFrame:
+def process(resp: requests.models.Response) -> pd.DataFrame:
     """
     processes (handles) the response from the fred's api
     and returns dataframe with processed observations
@@ -42,7 +44,7 @@ def process(resp: requests.models.response) -> pd.DataFrame:
     dj = resp.json()["observations"]
     df = pd.DataFrame(dj).iloc[:, [2,3]].set_index(["date"])
     df.index = [dt.strptime(i, "%Y-%m-%d") for i in df.index]
-    return (df.applymap(lambda v: float(v) if v != "." else None)).sort_index()
+    return (df.applymap(lambda v: float(v) if v != "." else None)).sort_index().dropna()
 
 
 def fetch(tickers: List[str], limit: Optional[int] = None) -> None:
@@ -50,7 +52,8 @@ def fetch(tickers: List[str], limit: Optional[int] = None) -> None:
     fetches observations from fred's api for tickers. If limit is None, add
     full observations, else the last n-limit observations.
     """
-    key = config['ApiKeys']['fred']
+    key = config['apiKeys']['fred']
+    print(key)
     urls =[build_fred(key, tck.split(".")[1], limit) for tck in tickers]
     with requests.session() as session:
         with executor() as e:
@@ -59,16 +62,13 @@ def fetch(tickers: List[str], limit: Optional[int] = None) -> None:
         df.columns = [tickers[i].upper()]
 
     # async adding of data
-    t0 = time.time()
     with executor() as e1:
         def _add(df):
             try:
                 add_batch_obs(df.columns[0], df)
-                print(f'{df.columns[0]} added')
             except:
                 print(f'{df.columns[0]} failed to be added')
         e1.map(_add, dfs)
-    print(time.time() - t0)
 
 
 if __name__ == "__main__":

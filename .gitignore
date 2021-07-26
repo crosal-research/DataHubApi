@@ -2,5 +2,5 @@
 *.*pyc
 *.*__pycache__
 tests
-configuration.json
+configuration.yaml
 ./DB/storage/

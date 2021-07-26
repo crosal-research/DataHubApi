@@ -1,6 +1,8 @@
 # import from system
 from datetime import datetime as dt
-import json, os
+import yaml, os
+from yaml.loader import SafeLoader
+
 
 # import from packages
 from pony  import orm
@@ -42,20 +44,22 @@ class TableDb(db.Entity):
     series = orm.Set(Series)
 
 
-# bootstrap db:
-with open("./configuration.json") as fp:
-    config = json.load(fp)
+########### bootstrap db ###############
+with open("./configuration.yaml") as f:
+    config = yaml.load(f, Loader=SafeLoader)
 
-if config["DB"]["provider"] == 'sqlite':
+if config["environment"] == 'development':
     dr = os.path.abspath(os.path.curdir)
-    db.bind(provider=config["DB"]["provider"], 
-            filename= dr + "/DB/storage/" + 'ipca.sqlite', create_db=True)    
+    d = config["development"]["DB"]
+    db.bind(provider=d["provider"], 
+             filename= dr + d["filename"], create_db=True)    
 else:
-    db.bind(provider=config["DB"]["provider"],
-            host=config["DB"]["host"],
-            port=config["DB"]["port"],
-            user=config["DB"]["user"], 
-            password=config["DB"]["password"],
-            database=config["DB"]["database"])    
+    db.bind(**config["development"]["DB"])
+    # db.bind(provider=config["DB"]["provider"],
+    #         host=config["DB"]["host"],
+    #         port=config["DB"]["port"],
+    #         user=config["DB"]["user"], 
+    #         password=config["DB"]["password"],
+    #         database=config["DB"]["database"])    
 
 db.generate_mapping(create_tables=True)    

@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor as executor
 import json, time
 from typing import List, Optional
 from datetime import datetime as dt
+import logging, logging.config
 
 # import from packages
 import requests
@@ -11,6 +12,10 @@ import pandas as pd
 
 #import from app
 from DB.transactions import add_obs
+
+# logging
+logging.config.fileConfig('./logging/logging.conf')
+logger = logging.getLogger('dbLoaders')
 
 
 __all__ = ["fetch", "tickers"]
@@ -50,7 +55,6 @@ def fetch(tickers: List[str], limit: Optional[int]=None) -> None:
     with requests.session() as session:
         with executor() as e:
             js = list(e.map(lambda url:_process(session.get(url)), list(urls)))
-    print(f"BCB's Data donwloaded: {time.time() - t1}")
     
     def _upsert_obs(tck, j):
         try:
@@ -64,12 +68,10 @@ def fetch(tickers: List[str], limit: Optional[int]=None) -> None:
         if js is not None:
             [_upsert_obs(tck, j) for j in js]
         else:
-            print(f"{tck} data is empty")
+            logger.error(f"{tck} data is empty")
 
     [_upsert_series(tck, j) for tck, j in zip(tickers, js)]
 
-    print("##############################################")
-    print(f"Done updating Observations for BCB: {time.time() - t1} seconds")
 
 ##############################MAIN##############################
 
