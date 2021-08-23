@@ -20,6 +20,7 @@ data = {1620:{"v":"", "c":"", "c1": None, "s":"CN"}, #contas nacionais
         3416:{"v":[0, 1], "c":[0, 1], "c1": None, "s": "PMC"}, #PMC narrow
         3417:{"v":"", "c":[0, 1], "c1": None, "s": "PMC"}, #PMC headline
         3419:{"v":"", "c":[0, 1], "c1": "", "s": "PMC"}, #PMC
+        6443:{"v":[1], "c":[0, 1], "c1": "", "s": "PMS"}, #, #PMS
         4093:{"v":[0, 4, 8, 12, 16, 20, 24], "c": None, "c1": None, "s": "PNAD"}, #pnad mensal 
         5440:{"v": [0, 2], "c":"", "c1": None, "s": "PNAD"}} #pnad rendimento
 

@@ -12,4 +12,4 @@ else:
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", **d)
+    uvicorn.run("API.main:app", **d)

@@ -1,6 +1,6 @@
 # import from system
 import json
-from typing import List, Optional
+from typing import List, Optional, Union
 import datetime
 
 # import from packages
@@ -15,20 +15,8 @@ from DB.loaders import fetch_obs
 
 router = APIRouter()
 
-#classes
-class Ind_obs(BaseModel):
-    """
-    model to modifying, creating observations for a particular
-    indicator: refers to all observations at a particular date for var in collection:
-    """
-    source: str = Field(...)
-    survey: str = Field(...)
-    database: str = Field(...)
-    limit: int = Field(None)
-
-
 # fetch resources
-@router.get("/api/v0.1/econseries")
+@router.get("/api/v0.1/econseries/")
 async def get_series(tickers: List[str]=Query(..., regex="^.+\..+"),
                      date_ini:datetime.date=Query(None), #, regex="^\d{4}-\d{2}-\d{2}$"), 
                      date_end:datetime.date=Query(None), #, regex="^\d{4}-\d{2}-\d{2}$"), 
@@ -48,20 +36,3 @@ async def get_series(tickers: List[str]=Query(..., regex="^.+\..+"),
     if form == "csv":
         return Response(df.to_csv(), media_type="application/text")
     return Response(df.to_json(), media_type="application/text")
-
-
-# management of resources
-# series
-@router.post("/api/v0.1/econseries")
-async def add_obs_indicator(indobs: Ind_obs):
-    """
-    add all observations for an indicator and a particular time as in indbos
-    """
-    print(f"{indobs.source}, {indobs.survey}, {indobs.database} and {indobs.limit}")
-    try:
-        fetch_obs.fetch_obs(indobs.source, indobs.survey, 
-                            indobs.database, limit=indobs.limit)
-        return f"Source {indobs.survey}, {indobs.survey} and {indobs.database} successfully added" 
-    except:
-        print("here")
-

@@ -53,7 +53,6 @@ def fetch(tickers: List[str], limit: Optional[int] = None) -> None:
     full observations, else the last n-limit observations.
     """
     key = config['apiKeys']['fred']
-    print(key)
     urls =[build_fred(key, tck.split(".")[1], limit) for tck in tickers]
     with requests.session() as session:
         with executor() as e:

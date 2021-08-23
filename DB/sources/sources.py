@@ -9,6 +9,7 @@ add_source("FRED",  "Federal Research Economic Data", "ECON", "Series-temporais"
 add_source("IBGE",  "Instituto Brasiliero de Geografia e Estatistica, Contas Nacionais", "CN", "Series-temporais")
 add_source("IBGE",  "Instituto Brasiliero de Geografia e Estatistica, Pesquisa Industrial Mensal", "PIM", "Series-temporais")
 add_source("IBGE",  "Instituto Brasiliero de Geografia e Estatistica, Pesquisa Mensal do Comercio", "PMC", "Series-temporais")
+add_source("IBGE",  "Instituto Brasiliero de Geografia e Estatistica, Pesquisa Mensal de Servicos", "PMS", "Series-temporais")
 add_source("IBGE",  "Instituto Brasiliero de Geografia e Estatistica, Pesquisa Nacional por Amostra de Domicílios", "PNAD", "Series-temporais")
 
 # BCB

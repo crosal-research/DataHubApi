@@ -3,9 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 #import from aap
-from routers import inflation
-from routers import econseries
-from routers import tables
+from API.routers import inflation
+from API.routers import econseries
+from API.routers import tables
 
 
 app = FastAPI()

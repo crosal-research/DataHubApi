@@ -37,10 +37,9 @@ def fetch_sheet(date:Optional[dt]=today) -> Optional[pd.DataFrame]:
         origin = f"https://www.tesourotransparente.gov.br/publicacoes/boletim-resultado-do-tesouro-nacional-rtn/{dat}"
         resp = requests.get(origin)
         itr += 1
-        print(itr)
         if itr > 20:
             print("Number of Attempts Exhausted")
-
+            
 
     soup = bs(resp.text, "html.parser")
     for link in soup.find_all('a'):

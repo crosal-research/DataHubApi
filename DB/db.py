@@ -45,7 +45,7 @@ class TableDb(db.Entity):
 
 
 ########### bootstrap db ###############
-with open("./configuration.yaml") as f:
+with open("../configuration.yaml") as f:
     config = yaml.load(f, Loader=SafeLoader)
 
 if config["environment"] == 'development':
@@ -54,12 +54,6 @@ if config["environment"] == 'development':
     db.bind(provider=d["provider"], 
              filename= dr + d["filename"], create_db=True)    
 else:
-    db.bind(**config["development"]["DB"])
-    # db.bind(provider=config["DB"]["provider"],
-    #         host=config["DB"]["host"],
-    #         port=config["DB"]["port"],
-    #         user=config["DB"]["user"], 
-    #         password=config["DB"]["password"],
-    #         database=config["DB"]["database"])    
+    db.bind(**config["production"]["DB"])
 
 db.generate_mapping(create_tables=True)    

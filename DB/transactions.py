@@ -33,10 +33,11 @@ def add_source(source:str, description:str, survey: str,
     Usource = source.upper()
     Udatabase = database.upper()
     Usurvey = survey.upper()
+
     if (src:= db.SourceDB.get(source=Usource, survey=Usurvey,
                               database=Udatabase)) is None:
         db.SourceDB(source=Usource, description=description, 
-                    survey=Usurvey, database=Udatabase)
+                        survey=Usurvey, database=Udatabase)
         logger.info(f"New source ({Usource}, {Usurvey}, {Udatabase}) added to the Database")
     else:
         src.description = description
@@ -104,7 +105,6 @@ def add_batch_obs(ticker:str, df:pd.DataFrame):
     """
     Adds dataframe n x 1 into the database. The index should be
     a datetime.index and the observations of the data column float numbers
-    
     """
     if df.shape[1] == 1:
         [add_obs(ticker.upper(), ind, float(df.loc[ind].values)) for ind in df.index]
